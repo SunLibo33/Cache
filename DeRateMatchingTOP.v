@@ -30,8 +30,8 @@ module DeRateMatching
 	input wire [3:0] i_rdm_sym_idx, //Symbol index 
 	input wire [3:0] i_user_num, //Total user number in this slot (Max. 8 users) 
 	input wire [63:0]i_users_cb_num, //CB number of ervery user (Max. 8 users) 
-	input wire [127:0]i_users_e0_sz, //E0 size of every user (Max. 8 users) 
-	input wire [127:0]i_users_e1_sz, //E1 size of every user (Max. 8 users) 
+	input wire [127:0]i_users_e0_sz, //E0 size of every user (Max. 8 users) , expected of  (E0 Bits / Qm) >> 4 + 1
+	input wire [127:0]i_users_e1_sz, //E1 size of every user (Max. 8 users) , expected of  (E1 Bits / Qm) >> 4 + 1
 	input wire [127:0]i_users_input_buffer_start,
 	input wire [3:0]  i_demux_user_idx,
 	input wire        i_layer_indicator,
@@ -73,24 +73,24 @@ begin
   if(i_layer_indicator==1'b0)
     begin
 	  InputBufferAddressStep_User0=2'b01;
-	  InputBufferAddressStep_User0=2'b01;
-	  InputBufferAddressStep_User0=2'b01;
-	  InputBufferAddressStep_User0=2'b01;
-	  InputBufferAddressStep_User0=2'b01;
-	  InputBufferAddressStep_User0=2'b01;
-	  InputBufferAddressStep_User0=2'b01;
-	  InputBufferAddressStep_User0=2'b01;	  
+	  InputBufferAddressStep_User1=2'b01;
+	  InputBufferAddressStep_User2=2'b01;
+	  InputBufferAddressStep_User3=2'b01;
+	  InputBufferAddressStep_User4=2'b01;
+	  InputBufferAddressStep_User5=2'b01;
+	  InputBufferAddressStep_User6=2'b01;
+	  InputBufferAddressStep_User7=2'b01;	  
 	end
   else
     begin
 	  InputBufferAddressStep_User0=2'b10;
-	  InputBufferAddressStep_User0=2'b10;
-	  InputBufferAddressStep_User0=2'b10;
-	  InputBufferAddressStep_User0=2'b10;
-	  InputBufferAddressStep_User0=2'b10;
-	  InputBufferAddressStep_User0=2'b10;
-	  InputBufferAddressStep_User0=2'b10;
-	  InputBufferAddressStep_User0=2'b10;		
+	  InputBufferAddressStep_User1=2'b10;
+	  InputBufferAddressStep_User2=2'b10;
+	  InputBufferAddressStep_User3=2'b10;
+	  InputBufferAddressStep_User4=2'b10;
+	  InputBufferAddressStep_User5=2'b10;
+	  InputBufferAddressStep_User6=2'b10;
+	  InputBufferAddressStep_User7=2'b10;		
 	end
 end
  
