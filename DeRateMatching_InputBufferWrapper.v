@@ -21,7 +21,7 @@
 
 			
 module DeRateMatching_InputBufferWrapper
-#(parameter DeRateMatching_InputBuffer_DataW=10, parameter DeRateMatching_InputBuffer_AddressW=10)
+#(parameter DeRateMatching_InputBuffer_DataW=48, parameter DeRateMatching_InputBuffer_AddressW=11)
 (
 
   input wire i_rx_rstn, 
