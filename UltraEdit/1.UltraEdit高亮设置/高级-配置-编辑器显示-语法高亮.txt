@@ -1,0 +1,19 @@
+高级-配置-编辑器显示-语法高亮
+
+将wordfile.txt文件放到如下路径
+
+C:\Program Files (x86)\IDM Computer Solutions\UltraEdit\wordfiles\wordfile.txt
+
+启动语法彩色显示
+
+
+please put following files :
+
+verilog2001.uew
+vhdl.uew
+python.uew
+perl.uew
+
+into path 
+
+C:\Users\Administrator\AppData\Roaming\IDMComp\UltraEdit\wordfiles
