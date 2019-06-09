@@ -18,7 +18,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 			
 			
-module DeRateMatchingTOP
+module DeRateMatching
 #(parameter DeRateMatching_InputBuffer_DataW=48, parameter DeRateMatching_InputBuffer_AddressW=11)
 (
     input wire       i_rx_rstn, //Active low asynchronous signal to reset flip-flops of all submodules of bs_ul_rx 
@@ -38,7 +38,7 @@ module DeRateMatchingTOP
 	input wire [7:0]  i_layer_indicator,
 	input wire        i_demux_strb,
 	input wire [95:0] i_demux_rx,	
-	input wire [31:0] i_users_qm 
+	input wire [31:0] i_users_qm
 	
 	//input/output/inout | reg/wire | signed/na | [7:0] | name,               
  
@@ -67,7 +67,7 @@ end
 reg [13:0]i_users_input_buffer_start_sum;
 always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
 begin
-  if(i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0)
+  if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
     begin
 	    i_users_input_buffer_start_user0 <= 14'd0;
 	    i_users_input_buffer_start_user1 <= 14'd0;
@@ -192,14 +192,14 @@ wire [13:0]InputBufferMaxAddress_User5;
 wire [13:0]InputBufferMaxAddress_User6;
 wire [13:0]InputBufferMaxAddress_User7;
 
-wire [13:0]InputBufferRE_Counter_User0;
-wire [13:0]InputBufferRE_Counter_User1;
-wire [13:0]InputBufferRE_Counter_User2;
-wire [13:0]InputBufferRE_Counter_User3;
-wire [13:0]InputBufferRE_Counter_User4;
-wire [13:0]InputBufferRE_Counter_User5;
-wire [13:0]InputBufferRE_Counter_User6;
-wire [13:0]InputBufferRE_Counter_User7;
+reg [13:0]InputBufferRE_Counter_User0;
+reg [13:0]InputBufferRE_Counter_User1;
+reg [13:0]InputBufferRE_Counter_User2;
+reg [13:0]InputBufferRE_Counter_User3;
+reg [13:0]InputBufferRE_Counter_User4;
+reg [13:0]InputBufferRE_Counter_User5;
+reg [13:0]InputBufferRE_Counter_User6;
+reg [13:0]InputBufferRE_Counter_User7;
 
 assign InputBufferMaxAddress_User0 = (CodeBlock_E01_Count_User0 < i_users_e0_num[7:0] )   ? (i_users_e0_sz[15:0]    )  : (i_users_e1_sz[15:0]    );
 assign InputBufferMaxAddress_User1 = (CodeBlock_E01_Count_User1 < i_users_e0_num[15:8] )  ? (i_users_e0_sz[31:16]   )  : (i_users_e1_sz[31:16]   );
@@ -213,7 +213,7 @@ assign InputBufferMaxAddress_User7 = (CodeBlock_E01_Count_User7 < i_users_e0_num
 
 always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
 begin
-  if(i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0)
+  if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
     begin
 	  InputBufferRE_Counter_User0 <= 14'd0;
 	  InputBufferRE_Counter_User1 <= 14'd0;
@@ -401,7 +401,7 @@ end
 
 always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
 begin
-  if(i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0)
+  if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
     begin
 	  InputBufferAddressTotal_User0 <= 14'd0;
 	  InputBufferAddressTotal_User1 <= 14'd0;
@@ -508,15 +508,16 @@ reg [10:0]InputBufferWriteAddress_Common;
 always @(*)
 begin
 	case(i_demux_user_idx)
-	  4'b0000:InputBufferWriteAddress_Common={PingPong_Indicator_User0,InputBufferAddressTotal_User0[13:4];
-	  4'b0001:InputBufferWriteAddress_Common={PingPong_Indicator_User1,InputBufferAddressTotal_User1[13:4]; 
-	  4'b0010:InputBufferWriteAddress_Common={PingPong_Indicator_User2,InputBufferAddressTotal_User2[13:4]; 
-	  4'b0011:InputBufferWriteAddress_Common={PingPong_Indicator_User3,InputBufferAddressTotal_User3[13:4]; 
-	  4'b0100:InputBufferWriteAddress_Common={PingPong_Indicator_User4,InputBufferAddressTotal_User4[13:4];
-	  4'b0101:InputBufferWriteAddress_Common={PingPong_Indicator_User5,InputBufferAddressTotal_User5[13:4]; 
-	  4'b0110:InputBufferWriteAddress_Common={PingPong_Indicator_User6,InputBufferAddressTotal_User6[13:4]; 
-	  4'b0111:InputBufferWriteAddress_Common={PingPong_Indicator_User7,InputBufferAddressTotal_User7[13:4]; 				
+	  4'b0000:InputBufferWriteAddress_Common={PingPong_Indicator_User0,InputBufferAddressTotal_User0[13:4]};
+	  4'b0001:InputBufferWriteAddress_Common={PingPong_Indicator_User1,InputBufferAddressTotal_User1[13:4]}; 
+	  4'b0010:InputBufferWriteAddress_Common={PingPong_Indicator_User2,InputBufferAddressTotal_User2[13:4]}; 
+	  4'b0011:InputBufferWriteAddress_Common={PingPong_Indicator_User3,InputBufferAddressTotal_User3[13:4]}; 
+	  4'b0100:InputBufferWriteAddress_Common={PingPong_Indicator_User4,InputBufferAddressTotal_User4[13:4]};
+	  4'b0101:InputBufferWriteAddress_Common={PingPong_Indicator_User5,InputBufferAddressTotal_User5[13:4]}; 
+	  4'b0110:InputBufferWriteAddress_Common={PingPong_Indicator_User6,InputBufferAddressTotal_User6[13:4]}; 
+	  4'b0111:InputBufferWriteAddress_Common={PingPong_Indicator_User7,InputBufferAddressTotal_User7[13:4]}; 				
 	  default:InputBufferWriteAddress_Common=11'h7FF;// Highest Address space of the Buffer
+	endcase
 end
 
 wire [10:0]InputBufferReadAddress_Common;
@@ -563,6 +564,8 @@ begin
 	    
 end
 
+reg [DeRateMatching_InputBuffer_DataW*16-1:0] InputBufferWriteData;
+
 always @(*)
 begin
 /* 	case(i_demux_user_idx)
@@ -575,12 +578,13 @@ begin
 		  else
 		    begin
 			  case(i_users_qm_use)
-			    4'd1:InputBufferWriteData={8{42'd0,i_demux_rx[11:6],42'd0,i_demux_rx[5:0]}};
+			   4'd1:InputBufferWriteData={8{42'd0,i_demux_rx[11:6],42'd0,i_demux_rx[5:0]}};
 				4'd2:InputBufferWriteData={8{36'd0,i_demux_rx[23:12],36'd0,i_demux_rx[11:0]}};
 				4'd4:InputBufferWriteData={8{24'd0,i_demux_rx[47:24],24'd0,i_demux_rx[23:0]}};
 				4'd6:InputBufferWriteData={8{12'd0,i_demux_rx[71:36],12'd0,i_demux_rx[35:0]}};
 				4'd8:InputBufferWriteData={8{i_demux_rx}};
-                default:InputBufferWriteData=DeRateMatching_InputBuffer_DataW*16'd0;				
+            default:InputBufferWriteData=DeRateMatching_InputBuffer_DataW*16'd0;	
+	        endcase			
 			end
 /* 	    end */
 end
