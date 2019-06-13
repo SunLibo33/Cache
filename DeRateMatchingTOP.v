@@ -28,14 +28,13 @@ module DeRateMatching
     input wire       i_rdm_slot_end, //A pulse to indicate the end of a slot 
 	input wire       i_rdm_sym_start, //A pulse to indicate the start of a symbol 
 	input wire       i_rdm_sym_end, //A pulse to indicate the end of a symbol
-	input wire [3:0] i_rdm_sym_idx, //Symbol index 
 	input wire [3:0] i_user_num, //Total user number in this slot (Max. 8 users) 
 	input wire [63:0]i_users_cb_num, //CB number of ervery user (Max. 8 users) 
 	input wire [127:0]i_users_e0_sz, //E0 size of every user (Max. 8 users) , expected of PUSCH User Data E0 : REs Numbers - 1   
 	input wire [127:0]i_users_e1_sz, //E1 size of every user (Max. 8 users) , expected of PUSCH User Data E1 : REs Numbers - 1 
-	input wire [63:0] i_users_e0_num, //CB number of E0 size of every user (Max. 8 users) 
+	input wire [63:0] i_users_e0_num, //CB numbers of E0 size of every user (Max. 8 users) ： E0 Real Amount for each user
 	input wire [3:0]  i_demux_user_idx,
-	input wire [7:0]  i_layer_indicator,
+	input wire [7:0]  i_layer_indicator,// For each user , bit'0' represent 1 layer mapping on , bit'1' represent 2 layers mapping on
 	input wire        i_demux_strb,
 	input wire [95:0] i_demux_rx,	
 	input wire [31:0] i_users_qm
@@ -252,14 +251,14 @@ else
 		  InputBufferRE_Counter_User5 <= 14'd0;
 		  InputBufferRE_Counter_User6 <= 14'd0;
 		  InputBufferRE_Counter_User7 <= 14'd0;
-		  PingPong_Indicator_User0 <= 1'b0;
+/* 		  PingPong_Indicator_User0 <= 1'b0;
 		  PingPong_Indicator_User1 <= 1'b0;
 		  PingPong_Indicator_User2 <= 1'b0;
 		  PingPong_Indicator_User3 <= 1'b0;
 		  PingPong_Indicator_User4 <= 1'b0;
 		  PingPong_Indicator_User5 <= 1'b0;
 		  PingPong_Indicator_User6 <= 1'b0;
-		  PingPong_Indicator_User7 <= 1'b0;		
+		  PingPong_Indicator_User7 <= 1'b0;		 */
 		  CodeBlock_E01_Count_User0 <= 8'd0;
 		  CodeBlock_E01_Count_User1 <= 8'd0;
 		  CodeBlock_E01_Count_User2 <= 8'd0;
@@ -695,6 +694,34 @@ DeRateMatching_InputBufferWrapper DeRateMatching_InputBufferWrapper_U1
 );
 
 
+wire [7:0] PingPong_Indicator_Combine;
+assign PingPong_Indicator_Combine = { PingPong_Indicator_User7,PingPong_Indicator_User6,
+                                      PingPong_Indicator_User5,PingPong_Indicator_User4,
+                                      PingPong_Indicator_User3,PingPong_Indicator_User2,	
+                                      PingPong_Indicator_User1,PingPong_Indicator_User0									  
+};
+
+wire i_current_cb_combine_comp;
+wire o_Combine_process_request;
+wire [3:0]o_Combine_user_index;
+
+FSM_TOP FSM_TOP_U1
+//#(parameter DATA_WIDTH=48, parameter ADDR_WIDTH=11)
+(
+  .i_rx_rstn(i_rx_rstn), 
+  .i_rx_fsm_rstn(i_rx_fsm_rstn), 			 
+  .i_core_clk(i_core_clk), 
+  .i_rdm_slot_start(i_rdm_slot_start),
+  .PingPong_Indicator_Combine(PingPong_Indicator_Combine),
+  .i_current_cb_combine_comp(i_current_cb_combine_comp),
+  .o_Combine_process_request(o_Combine_process_request),
+  .o_Combine_user_index(o_Combine_user_index)
+ 
+);
+	
+ 
+ 
+	
 	
 endmodule
 
