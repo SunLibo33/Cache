@@ -28,6 +28,7 @@ reg [7:0]Next_State    = IDLE;
 reg [7:0] User_Circle_Shift;
 reg [7:0] PingPong_Indicator_Combine_1D;
 reg [7:0] InputBuffer_User_Ready;
+wire      User_Circle_Shift_Adj;
 always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
 begin
   if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
@@ -104,7 +105,6 @@ begin
 	end
 end
 
-wire   User_Circle_Shift_Adj;
 assign User_Circle_Shift_Adj = |(InputBuffer_User_Ready & User_Circle_Shift);
 
 always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
