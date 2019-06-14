@@ -20,10 +20,19 @@ module FSM_Combine
   input wire [95:0] i_RDM_Data_Content,
   input wire        i_RDM_Data_Comp, 
   input wire [127:0]i_users_ncb, 
+  input wire [95:0] i_COMB_Data_Read,  
   output wire[95:0] o_COMB_Data_Write,
   output wire[10:0] o_COMB_Data_Read_Address, 
   output wire[10:0] o_COMB_Data_Write_Address,
-  output wire       o_COMB_Data_PingPing_Indicator 
+  
+  output wire        o_SENDHARQ_Data_request,
+  output wire        o_SENDHARQ_Data_PingPing_Indicator,
+  output wire [15:0] o_SENDHARQ_Data_ncb,
+  
+  input wire         i_SENDHARQ_Data_Comp,
+  input wire  [10:0] i_SENDHARQ_Data_Address 
+ 
+    
   
 );
 
@@ -118,38 +127,83 @@ begin
 end
 
 wire Permit_Fill;
-reg [10:0]OutputBufferWriteAddress;
+reg  [10:0]OutputBufferWriteAddressPre;
+reg  [10:0]OutputBufferWriteAddress;
+wire [10:0]OutputBufferReadAddress;
+
+assign OutputBufferReadAddress=OutputBufferWriteAddressPre;
+
 always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
 begin
   if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
     begin
-	  OutputBufferWriteAddress <= 11'd0;
+	  OutputBufferWriteAddressPre <= 11'd0;
+	  OutputBufferWriteAddress    <= 11'd0;
 	end
   else
     begin
 	  if(Current_State==IDLE)
-	    OutputBufferWriteAddress <= 11'd0;
+	    OutputBufferWriteAddressPre <= 11'd0;
+		OutputBufferWriteAddress    <= 11'd0;
       else if(Current_State==FILL)
 	    begin
 	      if((i_RDM_Data_Valid==1'b1)&&(Permit_Fill==1'b1))
 		    begin
-		      if(OutputBufferWriteAddress<users_ncb_size_use[15:4])
-	            OutputBufferWriteAddress<=OutputBufferWriteAddress+1'd1;
+			  OutputBufferWriteAddress<=OutputBufferWriteAddressPre;
+		      if(OutputBufferWriteAddressPre<users_ncb_size_use[15:4])
+	            OutputBufferWriteAddressPre<=OutputBufferWriteAddressPre+1'd1;
 			  else
-			    OutputBufferWriteAddress<=11'd0;
+			    OutputBufferWriteAddressPre<=11'd0;
 			end
 		end
       else if(Current_State==COMBINE)
 	    begin
 	      if((i_RDM_Data_Valid==1'b1)&&(Permit_Combine==1'b1))
 		    begin
-		      if(OutputBufferWriteAddress<users_ncb_size_use[15:4])
-	            OutputBufferWriteAddress<=OutputBufferWriteAddress+1'd1;
+			  OutputBufferWriteAddress<=OutputBufferWriteAddressPre;
+		      if(OutputBufferWriteAddressPre<users_ncb_size_use[15:4])
+	            OutputBufferWriteAddressPre<=OutputBufferWriteAddressPre+1'd1;
 			  else
-			    OutputBufferWriteAddress<=11'd0;
+			    OutputBufferWriteAddressPre<=11'd0;
 		    end
 		end
 	end
 end
+
+reg [95:0]   i_RDM_Data_Content_1D;
+wire[159:0]  i_RDM_Data_Content_CombineSum;
+always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
+begin
+  if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
+    begin
+	  i_RDM_Data_Content_1D <= 96'd0;
+	end
+  else
+    begin
+	  i_RDM_Data_Content_1D <= i_RDM_Data_Content;
+	end
+end
+
+DualPort_SRAM DualPort_SRAM_COMB_Ping_Buffer
+#(160,11)
+(
+	.data,
+	.rdaddress, 
+	.wraddress,
+	.wren, 
+	.clock,
+	.q
+);
+
+DualPort_SRAM DualPort_SRAM_COMB_Pong_Buffer
+#(160,11)
+(
+	.data,
+	.rdaddress, 
+	.wraddress,
+	.wren, 
+	.clock,
+	.q
+);
 
 endmodule
