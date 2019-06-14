@@ -26,7 +26,7 @@ module FSM_Combine
   output wire[10:0] o_COMB_Data_Write_Address,
   
   output wire        o_SENDHARQ_Data_request,
-  output wire        o_SENDHARQ_Data_PingPing_Indicator,
+  output wire        o_SENDHARQ_Data_PingPong_Indicator,
   output wire [15:0] o_SENDHARQ_Data_ncb,
   
   input wire         i_SENDHARQ_Data_Comp,
@@ -35,6 +35,9 @@ module FSM_Combine
     
   
 );
+
+
+reg Data_Combine_PingPong_Indicator=1'b0;
 
 parameter IDLE        = 8'b0000_0001;
 parameter FILL        = 8'b0000_0010;
@@ -76,7 +79,7 @@ begin
 		  end
 	    WAIT:
 		  begin
-		    if(Permit_Combine==1'b1)
+		    if(i_SENDHARQ_Data_Comp==1'b1)
 			  Next_State=FILL;
 			else
 			  Next_State=WAIT;
@@ -102,6 +105,21 @@ begin
       endcase		
 	end
 end
+
+
+always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
+begin
+  if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
+    begin
+	  Data_Combine_PingPong_Indicator<=1'b0;
+	end
+  else
+    begin
+      if(Current_State==COMPLETE)
+        Data_Combine_PingPong_Indicator<=~Data_Combine_PingPong_Indicator;
+    end
+end
+
 
 reg [15:0]users_ncb_size_use;
 always @(*)
@@ -151,6 +169,7 @@ begin
     begin
 	  OutputBufferWriteAddressPre <= 11'd0;
 	  OutputBufferWriteAddress    <= 11'd0;
+      OutputBufferWriteEnable     <= 1'b0;
 	end
   else
     begin
@@ -158,11 +177,13 @@ begin
 	    begin
 	      OutputBufferWriteAddressPre <= 11'd0;
 		  OutputBufferWriteAddress    <= 11'd0;
+          OutputBufferWriteEnable     <= 1'b0;
 		end
       else if((Current_State==FILL)||(Current_State==COMBINE))
 	    begin
 	      if(i_RDM_Data_Valid==1'b1)
 		    begin
+              OutputBufferWriteEnable <= 1'b1;
 			  OutputBufferWriteAddress<=OutputBufferWriteAddressPre;
 			  i_RDM_Data_Content_1D <= i_RDM_Data_Content;
 		      if(OutputBufferWriteAddressPre<users_ncb_size_use[15:4])
@@ -170,6 +191,10 @@ begin
 			  else
 			    OutputBufferWriteAddressPre<=11'd0;
 			end
+          else
+            begin
+              OutputBufferWriteEnable <= 1'b0;
+            end
 		end
 	end
 end
