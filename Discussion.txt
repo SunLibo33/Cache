@@ -1,0 +1,6 @@
+1. Output Buffer  ，需要确定 NULL Bits 的位置，并且插入之后 再输出数据给 HARQ 模块 ; 
+2. 如果Output Buffer Ping Ncb Combine 完成之后，切换至Output Buffer Pong 继续Combine , 
+   与此同时 Output Buffer Ping 输出数据给 HARQ 模块 , 这个时候如果Output Buffer Pong Combine完成
+   我们需要等待Output Buffer Ping 输出数据完成，才可以启动下一次Output Buffer Ping Ncb Combine;
+3. 刚刚算法工程师提供 E/Ncb <=16 , 我们还是采取缩放因子进行数据Combine？ 
+   还是将数据位宽定义为[9:0],然后根据累加次数,截取所需要的位宽呢？

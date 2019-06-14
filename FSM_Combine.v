@@ -70,32 +70,25 @@ begin
 	    IDLE:
 		  begin
 		    if(i_Combine_process_request==1'b1)
-			  Next_State=FILL;
+			  Next_State=WAIT;
 			else
 			  Next_State=IDLE;
+		  end
+	    WAIT:
+		  begin
+		    if(Permit_Combine==1'b1)
+			  Next_State=FILL;
+			else
+			  Next_State=WAIT;
 		  end
 	    FILL:
 		  begin
 		    if(i_RDM_Data_Comp==1'b1)
 			  Next_State=COMPLETE;
 		    else if(OutputBufferWriteAddress>=users_ncb_size_use[15:4])
-			  begin
-			    if(Permit_Combine==1'b1)
-				  Next_State=COMBINE;
-				else
-				  Next_State=WAIT;
-			  end
-			else
-			  begin
-			    Next_State=FILL;
-			  end
-		  end
-	    WAIT:
-		  begin
-		    if(Permit_Combine==1'b1)
 			  Next_State=COMBINE;
 			else
-			  Next_State=WAIT;
+			  Next_State=FILL;
 		  end
 	    COMBINE:
 		  begin
@@ -126,7 +119,6 @@ begin
 	endcase
 end
 
-wire Permit_Fill;
 reg  [10:0]OutputBufferWriteAddressPre;
 reg  [10:0]OutputBufferWriteAddress;
 wire [10:0]OutputBufferReadAddress;
@@ -167,9 +159,9 @@ begin
 	      OutputBufferWriteAddressPre <= 11'd0;
 		  OutputBufferWriteAddress    <= 11'd0;
 		end
-      else if(Current_State==FILL)
+      else if((Current_State==FILL)||(Current_State==COMBINE))
 	    begin
-	      if((i_RDM_Data_Valid==1'b1)&&(Permit_Fill==1'b1))
+	      if(i_RDM_Data_Valid==1'b1)
 		    begin
 			  OutputBufferWriteAddress<=OutputBufferWriteAddressPre;
 			  i_RDM_Data_Content_1D <= i_RDM_Data_Content;
@@ -178,18 +170,6 @@ begin
 			  else
 			    OutputBufferWriteAddressPre<=11'd0;
 			end
-		end
-      else if(Current_State==COMBINE)
-	    begin
-	      if((i_RDM_Data_Valid==1'b1)&&(Permit_Combine==1'b1))
-		    begin
-			  OutputBufferWriteAddress<=OutputBufferWriteAddressPre;
-			  i_RDM_Data_Content_1D <= i_RDM_Data_Content;
-		      if(OutputBufferWriteAddressPre<users_ncb_size_use[15:4])
-	            OutputBufferWriteAddressPre<=OutputBufferWriteAddressPre+1'd1;
-			  else
-			    OutputBufferWriteAddressPre<=11'd0;
-		    end
 		end
 	end
 end
