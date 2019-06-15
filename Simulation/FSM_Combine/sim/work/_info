@@ -9,72 +9,81 @@ Z0 dE:/CASA/Cache/simulation/FSM_Combine/sim
 !i10e 25
 !i10f 100
 T_opt
-!s110 1560575132
 V7zNWEoLmT3]n:B1;_nIXM2
-04 14 4 work tb_FSM_Combine fast 0
+Z1 04 14 4 work tb_FSM_Combine fast 0
 =1-74d4355e1b46-5d047c9c-aa-66a0
-o-quiet -auto_acc_if_foreign -work work +acc
+Z2 o-quiet -auto_acc_if_foreign -work work +acc
 n@_opt
-OL;O;10.2c;57
+Z3 OL;O;10.2c;57
+Z4 dE:/CASA/Cache/simulation/FSM_Combine/sim
+!s110 1560575132
+T_opt1
+!s110 1560584429
+Vj=Li:d4^<GAe?UP[4[z_h3
+R1
+=1-74d4355e1b46-5d04a0ed-b3-7338
+R2
+n@_opt1
+R3
 vDualPort_SRAM
-Z1 !s110 1560575131
+Z5 !s110 1560584428
 IAc2SXKlR@NVo9U8YR@o4=2
-Z2 V`JN@9S9cnhjKRR_L]QIcM3
-Z3 dE:/CASA/Cache/simulation/FSM_Combine/sim
+Z6 V`JN@9S9cnhjKRR_L]QIcM3
+Z7 dE:/CASA/Cache/Simulation/FSM_Combine/sim
 w1559968610
 8./../design/DualPort_SRAM.v
 F./../design/DualPort_SRAM.v
 L0 5
-Z4 OL;L;10.2c;57
+Z8 OL;L;10.2c;57
 r1
 31
-Z5 !s108 1560575131.112000
-Z6 !s107 ./../design/FSM_Combine.v|./../design/DualPort_SRAM.v|
-Z7 !s90 -reportprogress|300|./../design/DualPort_SRAM.v|./../design/FSM_Combine.v|
-Z8 o-L mtiAvm -L mtiOvm -L mtiUvm -L mtiUPF
+Z9 !s108 1560584428.320000
+Z10 !s107 ./../design/FSM_Combine.v|./../design/DualPort_SRAM.v|
+Z11 !s90 -reportprogress|300|./../design/DualPort_SRAM.v|./../design/FSM_Combine.v|
+Z12 o-L mtiAvm -L mtiOvm -L mtiUvm -L mtiUPF
 n@dual@port_@s@r@a@m
 !s100 2^8KEg3HVfoHzflHGoVZ=2
 !i10b 1
 !s85 0
 !i111 0
 vFSM_Combine
-R1
-I3X[0NoXR8o6QRWZ7cnS2Q0
-R2
-R3
-w1560572612
+R5
+I0e67EnVlmZ0[8]3oG9__`2
+R6
+R7
+w1560583607
 8./../design/FSM_Combine.v
 F./../design/FSM_Combine.v
 L0 5
-R4
+R8
 r1
 31
-R5
-R6
-R7
-R8
+R9
+R10
+R11
+R12
 n@f@s@m_@combine
-!s100 ZNdaZC?9@h<TImzCOm46W2
+!s100 ^18;^TVlD]gOAXjS@Snz23
 !i10b 1
 !s85 0
 !i111 0
 vtb_FSM_Combine
-IOYO75da`zj<ZRcU1zXj@[1
-R2
-R3
-w1560575113
+I7FA30<I;l7fa_T574A6<L1
+R6
+R7
+w1560584420
 8./tb_FSM_Combine.v
 F./tb_FSM_Combine.v
 L0 2
-R4
+R8
 r1
 31
-R8
+R12
 ntb_@f@s@m_@combine
-R1
+R5
 !s90 -reportprogress|300|./tb_FSM_Combine.v|
-!s100 P6Xdgo?k5I[jeC_l6_3AV0
-!s108 1560575130.992000
+!s100 _ICBGJT<Ck4l1<L8E2LH]3
+!s108 1560584428.194000
 !s107 ./tb_FSM_Combine.v|
 !i10b 1
 !s85 0

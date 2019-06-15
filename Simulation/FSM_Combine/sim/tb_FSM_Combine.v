@@ -29,10 +29,23 @@ initial
 	i_RDM_Data_Comp = 1'b1;
 	#20
 	i_Combine_process_request=1'b0;
+	#140
+	i_Combine_process_request=1'b1;
+	i_RDM_Data_Comp = 1'b0;
+    #1000
+	i_RDM_Data_Comp = 1'b1;
+	#20
+	i_Combine_process_request=1'b0;
   end  
   
   initial 
   begin
+    i_RDM_Data_Valid = 1'b1;
+    #400
+	i_RDM_Data_Valid = 1'b0;
+    #40
+	i_RDM_Data_Valid = 1'b1;
+    #140
     i_RDM_Data_Valid = 1'b1;
     #400
 	i_RDM_Data_Valid = 1'b0;
@@ -52,7 +65,7 @@ FSM_Combine FSM_Combine_instance(
   .i_RDM_Data_Valid(i_RDM_Data_Valid),  
   .i_RDM_Data_Content({16{tb_in_a}}),
   .i_RDM_Data_Comp(i_RDM_Data_Comp), 
-  .i_users_ncb({8{16'd100}}), 
+  .i_users_ncb({8{16'd160}}), 
   .i_SENDHARQ_Data_Comp(1'b1),
   .DualPort_SRAM_COMB_Ping_Buffer_Read_Data(DualPort_SRAM_COMB_Ping_Buffer_Read_Data),
   .DualPort_SRAM_COMB_Pong_Buffer_Read_Data(DualPort_SRAM_COMB_Pong_Buffer_Read_Data) 

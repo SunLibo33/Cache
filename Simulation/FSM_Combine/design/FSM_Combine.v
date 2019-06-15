@@ -15,7 +15,6 @@ module FSM_Combine
   input wire [3:0]  i_Combine_user_index,
   output wire       o_RDM_Data_Request,
   output wire[3:0]  o_RDM_Data_Amount,
-  input wire        i_SENDHARQ_Comp,
   input wire        i_RDM_Data_Valid,  
   input wire signed[95:0] i_RDM_Data_Content,
   input wire        i_RDM_Data_Comp, 

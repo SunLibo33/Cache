@@ -210,6 +210,48 @@ assign InputBufferMaxAddress_User5 = (CodeBlock_E01_Count_User5 < i_users_e0_num
 assign InputBufferMaxAddress_User6 = (CodeBlock_E01_Count_User6 < i_users_e0_num[55:48] ) ? (i_users_e0_sz[111:96]  )  : (i_users_e1_sz[111:96]  );
 assign InputBufferMaxAddress_User7 = (CodeBlock_E01_Count_User7 < i_users_e0_num[63:56] ) ? (i_users_e0_sz[127:112] )  : (i_users_e1_sz[127:112] );
 
+reg [13:0]Current_Combine_E01_Size_user0;
+reg [13:0]Current_Combine_E01_Size_user1;
+reg [13:0]Current_Combine_E01_Size_user2;
+reg [13:0]Current_Combine_E01_Size_user3;
+reg [13:0]Current_Combine_E01_Size_user4;
+reg [13:0]Current_Combine_E01_Size_user5;
+reg [13:0]Current_Combine_E01_Size_user6;
+reg [13:0]Current_Combine_E01_Size_user7;
+
+reg [13:0]io_Current_Combine_E01_Size;
+reg [15:0]io_Current_Combine_Ncb_Size;
+
+always @(*)
+begin
+  case(io_Combine_user_index)
+    4'd0:io_Current_Combine_E01_Size=Current_Combine_E01_Size_user0;
+	4'd1:io_Current_Combine_E01_Size=Current_Combine_E01_Size_user1;
+	4'd2:io_Current_Combine_E01_Size=Current_Combine_E01_Size_user2;
+	4'd3:io_Current_Combine_E01_Size=Current_Combine_E01_Size_user3;
+	4'd4:io_Current_Combine_E01_Size=Current_Combine_E01_Size_user4;
+	4'd5:io_Current_Combine_E01_Size=Current_Combine_E01_Size_user5;
+	4'd6:io_Current_Combine_E01_Size=Current_Combine_E01_Size_user6;
+	4'd7:io_Current_Combine_E01_Size=Current_Combine_E01_Size_user7;
+	default:io_Current_Combine_E01_Size=14'd0;
+  endcase
+end
+
+always @(*)
+begin
+  case(io_Combine_user_index)
+    4'd0:io_Current_Combine_Ncb_Size=i_users_ncb[15:0];
+	4'd1:io_Current_Combine_Ncb_Size=i_users_ncb[31:16];
+	4'd2:io_Current_Combine_Ncb_Size=i_users_ncb[47:32];
+	4'd3:io_Current_Combine_Ncb_Size=i_users_ncb[63:48];
+	4'd4:io_Current_Combine_Ncb_Size=i_users_ncb[79:64];
+	4'd5:io_Current_Combine_Ncb_Size=i_users_ncb[95:80];
+	4'd6:io_Current_Combine_Ncb_Size=i_users_ncb[111:96];
+	4'd7:io_Current_Combine_Ncb_Size=i_users_ncb[127:112];
+	default:io_Current_Combine_Ncb_Size=16'd0;
+  endcase
+end
+
 
 always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
 begin
@@ -238,7 +280,15 @@ begin
 	  CodeBlock_E01_Count_User4 <= 8'd0;
 	  CodeBlock_E01_Count_User5 <= 8'd0;
 	  CodeBlock_E01_Count_User6 <= 8'd0;
-	  CodeBlock_E01_Count_User7 <= 8'd0;	  
+	  CodeBlock_E01_Count_User7 <= 8'd0;
+      Current_Combine_E01_Size_user0 <= 14'd0;
+      Current_Combine_E01_Size_user1 <= 14'd0;
+      Current_Combine_E01_Size_user2 <= 14'd0;
+      Current_Combine_E01_Size_user3 <= 14'd0;
+      Current_Combine_E01_Size_user4 <= 14'd0;
+      Current_Combine_E01_Size_user5 <= 14'd0;
+      Current_Combine_E01_Size_user6 <= 14'd0;
+      Current_Combine_E01_Size_user7 <= 14'd0;	  
 	end
 else	
 	begin
@@ -280,6 +330,7 @@ else
 					  InputBufferRE_Counter_User0<=InputBufferRE_Counter_User0+InputBufferAddressStep_User0;
 					else
 					  begin
+					    Current_Combine_E01_Size_user0<=InputBufferRE_Counter_User0;
 					    InputBufferRE_Counter_User0<=14'd0;
 						PingPong_Indicator_User0<=~PingPong_Indicator_User0;
 						CodeBlock_E01_Count_User0<=CodeBlock_E01_Count_User0+1'd1;
@@ -291,6 +342,7 @@ else
 					  InputBufferRE_Counter_User1<=InputBufferRE_Counter_User1+InputBufferAddressStep_User1;
 					else
 					  begin
+					    Current_Combine_E01_Size_user1<=InputBufferRE_Counter_User1;					  
 					    InputBufferRE_Counter_User1<=14'd0;
 						PingPong_Indicator_User1<=~PingPong_Indicator_User1;
 						CodeBlock_E01_Count_User1<=CodeBlock_E01_Count_User1+1'd1;
@@ -302,6 +354,7 @@ else
 					  InputBufferRE_Counter_User2<=InputBufferRE_Counter_User2+InputBufferAddressStep_User2;
 					else
 					  begin
+					    Current_Combine_E01_Size_user2<=InputBufferRE_Counter_User2;						  
 					    InputBufferRE_Counter_User2<=14'd0;
 						PingPong_Indicator_User2<=~PingPong_Indicator_User2;
 						CodeBlock_E01_Count_User2<=CodeBlock_E01_Count_User2+1'd1;
@@ -313,6 +366,7 @@ else
 					  InputBufferRE_Counter_User3<=InputBufferRE_Counter_User3+InputBufferAddressStep_User3;
 					else
 					  begin
+					    Current_Combine_E01_Size_user3<=InputBufferRE_Counter_User3;						  
 					    InputBufferRE_Counter_User3<=14'd0;
 						PingPong_Indicator_User3<=~PingPong_Indicator_User3;
 						CodeBlock_E01_Count_User3<=CodeBlock_E01_Count_User3+1'd1;
@@ -324,6 +378,7 @@ else
 					  InputBufferRE_Counter_User4<=InputBufferRE_Counter_User4+InputBufferAddressStep_User4;
 					else
 					  begin
+					    Current_Combine_E01_Size_user4<=InputBufferRE_Counter_User4;						  
 					    InputBufferRE_Counter_User4<=14'd0;
 						PingPong_Indicator_User4<=~PingPong_Indicator_User4;
 						CodeBlock_E01_Count_User4<=CodeBlock_E01_Count_User4+1'd1;
@@ -335,6 +390,7 @@ else
 					  InputBufferRE_Counter_User5<=InputBufferRE_Counter_User5+InputBufferAddressStep_User5;
 					else
 					  begin
+					    Current_Combine_E01_Size_user5<=InputBufferRE_Counter_User5;						  
 					    InputBufferRE_Counter_User5<=14'd0;
 						PingPong_Indicator_User5<=~PingPong_Indicator_User5;
 						CodeBlock_E01_Count_User5<=CodeBlock_E01_Count_User5+1'd1;
@@ -346,6 +402,7 @@ else
 					  InputBufferRE_Counter_User6<=InputBufferRE_Counter_User6+InputBufferAddressStep_User6;
 					else
 					  begin
+					    Current_Combine_E01_Size_user6<=InputBufferRE_Counter_User6;						  
 					    InputBufferRE_Counter_User6<=14'd0;
 						PingPong_Indicator_User6<=~PingPong_Indicator_User6;
 						CodeBlock_E01_Count_User6<=CodeBlock_E01_Count_User6+1'd1;
@@ -357,6 +414,7 @@ else
 					  InputBufferRE_Counter_User7<=InputBufferRE_Counter_User7+InputBufferAddressStep_User7;
 					else
 					  begin
+					    Current_Combine_E01_Size_user7<=InputBufferRE_Counter_User7;						  
 					    InputBufferRE_Counter_User7<=14'd0;
 						PingPong_Indicator_User7<=~PingPong_Indicator_User7;
 						CodeBlock_E01_Count_User7<=CodeBlock_E01_Count_User7+1'd1;
@@ -387,7 +445,15 @@ else
                     CodeBlock_E01_Count_User4<=CodeBlock_E01_Count_User4;	
                     CodeBlock_E01_Count_User5<=CodeBlock_E01_Count_User5;	
                     CodeBlock_E01_Count_User6<=CodeBlock_E01_Count_User6;	
-                    CodeBlock_E01_Count_User7<=CodeBlock_E01_Count_User7;						
+                    CodeBlock_E01_Count_User7<=CodeBlock_E01_Count_User7;	
+					Current_Combine_E01_Size_user0 <= Current_Combine_E01_Size_user0;
+					Current_Combine_E01_Size_user1 <= Current_Combine_E01_Size_user1;
+					Current_Combine_E01_Size_user2 <= Current_Combine_E01_Size_user2;
+					Current_Combine_E01_Size_user3 <= Current_Combine_E01_Size_user3;
+					Current_Combine_E01_Size_user4 <= Current_Combine_E01_Size_user4;
+					Current_Combine_E01_Size_user5 <= Current_Combine_E01_Size_user5;
+					Current_Combine_E01_Size_user6 <= Current_Combine_E01_Size_user6;
+					Current_Combine_E01_Size_user7 <= Current_Combine_E01_Size_user7;						
 				  end
 		      endcase		
 		    end
@@ -695,16 +761,17 @@ DeRateMatching_InputBufferWrapper DeRateMatching_InputBufferWrapper_U1
 );
 
 
-wire [7:0] PingPong_Indicator_Combine;
-assign PingPong_Indicator_Combine = { PingPong_Indicator_User7,PingPong_Indicator_User6,
+wire [7:0] io_Input_PingPong_Buffer_Write_Indicator;
+assign io_Input_PingPong_Buffer_Write_Indicator = 
+                                    { PingPong_Indicator_User7,PingPong_Indicator_User6,
                                       PingPong_Indicator_User5,PingPong_Indicator_User4,
                                       PingPong_Indicator_User3,PingPong_Indicator_User2,	
                                       PingPong_Indicator_User1,PingPong_Indicator_User0									  
 };
 
-wire i_current_cb_combine_comp;
-wire o_Combine_process_request;
-wire [3:0]o_Combine_user_index;
+wire io_current_cb_combine_comp;
+wire io_Combine_process_request;
+wire [3:0]io_Combine_user_index;
 
 FSM_TOP FSM_TOP_U1
 //#(parameter DATA_WIDTH=48, parameter ADDR_WIDTH=11)
@@ -713,13 +780,35 @@ FSM_TOP FSM_TOP_U1
   .i_rx_fsm_rstn(i_rx_fsm_rstn), 			 
   .i_core_clk(i_core_clk), 
   .i_rdm_slot_start(i_rdm_slot_start),
-  .PingPong_Indicator_Combine(PingPong_Indicator_Combine),
-  .i_current_cb_combine_comp(i_current_cb_combine_comp),
-  .o_Combine_process_request(o_Combine_process_request),
-  .o_Combine_user_index(o_Combine_user_index)
+  .io_Input_PingPong_Buffer_Write_Indicator(io_Input_PingPong_Buffer_Write_Indicator),
+  .i_current_cb_combine_comp(io_current_cb_combine_comp),
+  .o_Combine_process_request(io_Combine_process_request),
+  .o_Combine_user_index(io_Combine_user_index)
  
 );
-	
+
+wire io_RDM_Data_Request;	
+wire io_RDM_Data_Valid;
+wire [95:0] io_RDM_Data_Content;
+wire io_RDM_Data_Comp;
+
+FSM_Combine FSM_Combine_U1
+(
+  .i_rx_rstn(i_rx_rstn), 
+  .i_rx_fsm_rstn(i_rx_fsm_rstn), 			 
+  .i_core_clk(i_core_clk), 
+  .i_rdm_slot_start(i_rdm_slot_start),
+  .o_current_cb_combine_comp(io_current_cb_combine_comp),
+  .i_Combine_process_request(io_Combine_process_request),
+  .i_Combine_user_index(io_Combine_user_index),
+  .o_RDM_Data_Request(io_RDM_Data_Request),
+  .i_RDM_Data_Valid(io_RDM_Data_Valid),  
+  .i_RDM_Data_Content(io_RDM_Data_Content),
+  .i_RDM_Data_Comp(io_RDM_Data_Comp), 
+  .i_users_ncb(i_users_ncb)
+
+  
+);
 
  
 	

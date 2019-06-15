@@ -10,20 +10,13 @@ module FSM_Combine
   input wire        i_core_clk, 
   input wire        i_rdm_slot_start,//not use
   output wire       o_current_cb_combine_comp,
-  input wire [7:0]  PingPong_Indicator_Combine,
   input wire        i_Combine_process_request,
   input wire [3:0]  i_Combine_user_index,
   output wire       o_RDM_Data_Request,
-  output wire[3:0]  o_RDM_Data_Amount,
-  input wire        i_SENDHARQ_Comp,
   input wire        i_RDM_Data_Valid,  
-  input wire signed[95:0] i_RDM_Data_Content,
+  input wire [95:0] i_RDM_Data_Content,
   input wire        i_RDM_Data_Comp, 
   input wire [127:0]i_users_ncb, 
-  input wire [95:0] i_COMB_Data_Read,  
-  output wire[95:0] o_COMB_Data_Write,
-  output wire[10:0] o_COMB_Data_Read_Address, 
-  output wire[10:0] o_COMB_Data_Write_Address,
   
   output wire        o_SENDHARQ_Data_request,
   output wire        o_SENDHARQ_Data_PingPong_Indicator,
@@ -227,8 +220,6 @@ begin
     DualPort_SRAM_COMB_Pong_Buffer_Read_Address=i_SENDHARQ_Data_Address;
 end
 
-/* wire [159:0]DualPort_SRAM_COMB_Ping_Buffer_Read_Data;
-wire [159:0]DualPort_SRAM_COMB_Pong_Buffer_Read_Data; */
 
 assign OutputBufferCombine_ReadData = (Data_Combine_PingPong_Indicator==1'b0)?DualPort_SRAM_COMB_Ping_Buffer_Read_Data:DualPort_SRAM_COMB_Pong_Buffer_Read_Data;
 

@@ -10,7 +10,7 @@ module FSM_TOP
   input wire        i_core_clk, 
   input wire        i_rdm_slot_start,
   input wire        i_current_cb_combine_comp,
-  input wire [7:0]  PingPong_Indicator_Combine,
+  input wire [7:0]  io_Input_PingPong_Buffer_Write_Indicator,
   output wire       o_Combine_process_request,
   output reg [3:0]  o_Combine_user_index
  
@@ -34,7 +34,7 @@ begin
   if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
 	PingPong_Indicator_Combine_1D<=8'd0;
   else
-    PingPong_Indicator_Combine_1D<=PingPong_Indicator_Combine;
+    PingPong_Indicator_Combine_1D<=io_Input_PingPong_Buffer_Write_Indicator;
 end
 
 generate
@@ -47,7 +47,7 @@ generate
 			  InputBuffer_User_Ready[i]<=1'b0;
 /* 		    else if(i_rdm_slot_start==1'b1)
 			  InputBuffer_User_Ready[i]<=1'b0; */
-		    else if(PingPong_Indicator_Combine[i]!=PingPong_Indicator_Combine_1D[i])
+		    else if(io_Input_PingPong_Buffer_Write_Indicator[i]!=PingPong_Indicator_Combine_1D[i])
 			  InputBuffer_User_Ready[i]<=1'b1;
 			else if((User_Circle_Shift[i]==1'b1)&&(Current_State==ECOMP))
 			  InputBuffer_User_Ready[i]<=1'b0;
