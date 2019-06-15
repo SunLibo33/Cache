@@ -8,7 +8,7 @@ module FSM_Combine
   input wire        i_rx_rstn, 
   input wire        i_rx_fsm_rstn, 			 
   input wire        i_core_clk, 
-  input wire        i_rdm_slot_start,
+  input wire        i_rdm_slot_start,//not use
   output wire       o_current_cb_combine_comp,
   input wire [7:0]  PingPong_Indicator_Combine,
   input wire        i_Combine_process_request,
@@ -30,8 +30,10 @@ module FSM_Combine
   output wire [15:0] o_SENDHARQ_Data_ncb,
   
   input wire         i_SENDHARQ_Data_Comp,
-  input wire  [10:0] i_SENDHARQ_Data_Address 
- 
+  input wire  [10:0] i_SENDHARQ_Data_Address,
+
+  output wire [159:0]DualPort_SRAM_COMB_Ping_Buffer_Read_Data,
+  output wire [159:0]DualPort_SRAM_COMB_Pong_Buffer_Read_Data 
     
   
 );
@@ -79,7 +81,7 @@ begin
 		  end
 	    WAIT:
 		  begin
-		    if(i_SENDHARQ_Data_Comp==1'b1)
+		    if(i_SENDHARQ_Data_Comp==1'b1)//Flag 1.1
 			  Next_State=FILL;
 			else
 			  Next_State=WAIT;
@@ -88,7 +90,7 @@ begin
 		  begin
 		    if(i_RDM_Data_Comp==1'b1)
 			  Next_State=COMPLETE;
-		    else if(OutputBufferWriteAddress>=users_ncb_size_use[15:4])
+		    else if(OutputBufferWriteAddress>=users_ncb_size_use[15:4])//Flag Confirmation
 			  Next_State=COMBINE;
 			else
 			  Next_State=FILL;
@@ -140,8 +142,8 @@ end
 reg  [10:0]OutputBufferWriteAddressPre;
 reg  [10:0]OutputBufferWriteAddress;
 wire [10:0]OutputBufferReadAddress;
-wire signed [159:0]OutputBufferReadData;
-reg  signed [159:0]OutputBufferWriteData;
+wire signed [159:0]OutputBufferCombine_ReadData;
+reg  signed [159:0]OutputBufferCombine_WriteData;
 
 assign OutputBufferReadAddress=OutputBufferWriteAddressPre;
 reg [95:0]   i_RDM_Data_Content_1D;
@@ -153,15 +155,25 @@ generate
 	    always@(*)
 		  begin
 		    if(Current_State==FILL)
-			  OutputBufferWriteData[(i*10+9):(i*10)]={{4{i_RDM_Data_Content_1D[(i*6+5)]}},i_RDM_Data_Content_1D[(i*6+5):(i*6)]};
+			  OutputBufferCombine_WriteData[(i*10+9):(i*10)]={{4{i_RDM_Data_Content_1D[(i*6+5)]}},i_RDM_Data_Content_1D[(i*6+5):(i*6)]};
 			else if(Current_State==COMBINE)
-			  OutputBufferWriteData[(i*10+9):(i*10)]={{4{i_RDM_Data_Content_1D[(i*6+5)]}},i_RDM_Data_Content_1D[(i*6+5):(i*6)]}+OutputBufferReadData[(i*10+9):(i*10)];
+			  OutputBufferCombine_WriteData[(i*10+9):(i*10)]={{4{i_RDM_Data_Content_1D[(i*6+5)]}},i_RDM_Data_Content_1D[(i*6+5):(i*6)]}+OutputBufferCombine_ReadData[(i*10+9):(i*10)];
 		    else 
-			  OutputBufferWriteData[(i*10+9):(i*10)]=10'd0;
+			  OutputBufferCombine_WriteData[(i*10+9):(i*10)]=10'd0;
 		  end
       end
 endgenerate
 
+reg OutputBufferWriteEnable=1'b0;
+always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
+begin
+  if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
+    OutputBufferWriteEnable <= 1'b0;
+  else if((Current_State==FILL)||(Current_State==COMBINE))
+	OutputBufferWriteEnable <= i_RDM_Data_Valid;
+  else
+    OutputBufferWriteEnable <= 1'b0; 
+end
 
 always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
 begin
@@ -169,7 +181,6 @@ begin
     begin
 	  OutputBufferWriteAddressPre <= 11'd0;
 	  OutputBufferWriteAddress    <= 11'd0;
-      OutputBufferWriteEnable     <= 1'b0;
 	end
   else
     begin
@@ -177,13 +188,11 @@ begin
 	    begin
 	      OutputBufferWriteAddressPre <= 11'd0;
 		  OutputBufferWriteAddress    <= 11'd0;
-          OutputBufferWriteEnable     <= 1'b0;
 		end
       else if((Current_State==FILL)||(Current_State==COMBINE))
 	    begin
 	      if(i_RDM_Data_Valid==1'b1)
 		    begin
-              OutputBufferWriteEnable <= 1'b1;
 			  OutputBufferWriteAddress<=OutputBufferWriteAddressPre;
 			  i_RDM_Data_Content_1D <= i_RDM_Data_Content;
 		      if(OutputBufferWriteAddressPre<users_ncb_size_use[15:4])
@@ -191,35 +200,58 @@ begin
 			  else
 			    OutputBufferWriteAddressPre<=11'd0;
 			end
-          else
-            begin
-              OutputBufferWriteEnable <= 1'b0;
-            end
 		end
 	end
 end
 
+reg [10:0]DualPort_SRAM_COMB_Ping_Buffer_Read_Address;
+reg [10:0]DualPort_SRAM_COMB_Pong_Buffer_Read_Address;
+
+always @(*)
+begin 
+  if(Data_Combine_PingPong_Indicator==1'b1)
+    DualPort_SRAM_COMB_Ping_Buffer_Read_Address=i_SENDHARQ_Data_Address;
+  else if((Current_State==FILL)||(Current_State==COMBINE))
+    DualPort_SRAM_COMB_Ping_Buffer_Read_Address=OutputBufferReadAddress;
+  else
+    DualPort_SRAM_COMB_Ping_Buffer_Read_Address=i_SENDHARQ_Data_Address;
+end
+
+always @(*)
+begin 
+  if(Data_Combine_PingPong_Indicator==1'b0)
+    DualPort_SRAM_COMB_Pong_Buffer_Read_Address=i_SENDHARQ_Data_Address;
+  else if((Current_State==FILL)||(Current_State==COMBINE))
+    DualPort_SRAM_COMB_Pong_Buffer_Read_Address=OutputBufferReadAddress;
+  else
+    DualPort_SRAM_COMB_Pong_Buffer_Read_Address=i_SENDHARQ_Data_Address;
+end
+
+/* wire [159:0]DualPort_SRAM_COMB_Ping_Buffer_Read_Data;
+wire [159:0]DualPort_SRAM_COMB_Pong_Buffer_Read_Data; */
+
+assign OutputBufferCombine_ReadData = (Data_Combine_PingPong_Indicator==1'b0)?DualPort_SRAM_COMB_Ping_Buffer_Read_Data:DualPort_SRAM_COMB_Pong_Buffer_Read_Data;
 
 DualPort_SRAM DualPort_SRAM_COMB_Ping_Buffer
 #(160,11)
 (
-	.data,
-	.rdaddress, 
-	.wraddress,
-	.wren, 
-	.clock,
-	.q
+	.data(OutputBufferCombine_WriteData),
+	.rdaddress(DualPort_SRAM_COMB_Ping_Buffer_Read_Address),
+	.wraddress(OutputBufferWriteAddress),
+	.wren( ((Data_Combine_PingPong_Indicator==1'b0)&&(OutputBufferWriteEnable==1'b1)) ), 
+	.clock(i_core_clk),
+	.q(DualPort_SRAM_COMB_Ping_Buffer_Read_Data)
 );
 
 DualPort_SRAM DualPort_SRAM_COMB_Pong_Buffer
 #(160,11)
 (
-	.data,
-	.rdaddress, 
-	.wraddress,
-	.wren, 
-	.clock,
-	.q
+	.data(OutputBufferCombine_WriteData),
+	.rdaddress(DualPort_SRAM_COMB_Pong_Buffer_Read_Address), 
+	.wraddress(OutputBufferWriteAddress),
+	.wren( ((Data_Combine_PingPong_Indicator==1'b1)&&(OutputBufferWriteEnable==1'b1)) ), 
+	.clock(i_core_clk),
+	.q(DualPort_SRAM_COMB_Pong_Buffer_Read_Data)
 );
 
 endmodule

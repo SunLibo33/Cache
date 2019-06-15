@@ -32,7 +32,7 @@ module DeRateMatching
 	input wire [63:0]i_users_cb_num, //CB number of ervery user (Max. 8 users) 
 	input wire [127:0]i_users_e0_sz, //E0 size of every user (Max. 8 users) , expected of PUSCH User Data E0 : REs Numbers - 1   
 	input wire [127:0]i_users_e1_sz, //E1 size of every user (Max. 8 users) , expected of PUSCH User Data E1 : REs Numbers - 1 
-	input wire [127:0]i_users_ncb, //Ncb size of every user (Max. 8 users) : REs Numbers - 1 
+	input wire [127:0]i_users_ncb, //Ncb size of every user (Max. 8 users) : Bits Numbers - 1 
 	input wire [63:0] i_users_e0_num, //CB numbers of E0 size of every user (Max. 8 users) ： E0 Real Amount for each user
 	input wire [3:0]  i_demux_user_idx,
 	input wire [7:0]  i_layer_indicator,// For each user , bit'0' represent 1 layer mapping on , bit'1' represent 2 layers mapping on
