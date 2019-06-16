@@ -133,7 +133,7 @@ begin
 			 end
 		  else
 		     begin
-			   if(( (o_Input_Buffer_Offset_Address+i_Current_Combine_E01_Size[13:4])-Pre_Tail_Point[15:4] )==16'd2)
+			   if(( (o_Input_Buffer_Offset_Address+i_Current_Combine_E01_Size[13:4])-Pre_Tail_Point[15:4] )<=16'd2)
 			     begin
 				   i_Input_Buffer_RDM_Data_Enable<=1'b1;
 				   if(o_Input_Buffer_Offset_Address<i_Current_Combine_E01_Size[13:4])
