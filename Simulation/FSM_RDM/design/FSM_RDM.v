@@ -30,6 +30,14 @@ parameter DATACOMP = 8'b0001_0000;
 
 reg [7:0]Current_State = IDLE;
 reg [7:0]Next_State    = IDLE;
+reg [95:0]  i_Input_Buffer_RDM_Data_1D;
+reg [95:0]  i_Input_Buffer_RDM_Data_2D;
+reg [95:0]  i_Input_Buffer_RDM_Data_3D;
+reg         i_Input_Buffer_RDM_Data_Enable;
+reg [15:0]Header_Point,Tail_Point;
+reg [15:0]Pre_Header_Point;
+reg [15:0]Pre_Tail_Point;
+reg [15:0]Point_Ass_Counter;
 
 always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
 begin
@@ -87,10 +95,7 @@ begin
 	end
 end
 
-reg [95:0]  i_Input_Buffer_RDM_Data_1D;
-reg [95:0]  i_Input_Buffer_RDM_Data_2D;
-reg [95:0]  i_Input_Buffer_RDM_Data_3D;
-reg         i_Input_Buffer_RDM_Data_Enable;
+
 
 always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
 begin
@@ -166,16 +171,12 @@ begin
 	end
 end
 
-reg [15:0]Header_Point,Tail_Point;
-reg [15:0]Pre_Header_Point;
-reg [15:0]Pre_Tail_Point;
-reg [15:0]Point_Ass_Counter;
 
 always @(*)
 begin 
   if(Current_State==DATASEND)
     begin
-          if(Point_Ass_Counter<i_Current_Combine_Ncb_Size[15:4])
+          if((Point_Ass_Counter+1'd1)!=i_Current_Combine_Ncb_Size[15:4])
 		    begin
 			  if((Header_Point+16'd16)>i_Current_Combine_E01_Size)
 				Pre_Header_Point=((Header_Point+16'd15)-i_Current_Combine_E01_Size);  
@@ -232,7 +233,6 @@ begin
   else
     Current_Cache_Data_Enough=1'b0;
 end
-
 
 
 always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
