@@ -61,7 +61,7 @@ begin
 		  end
 	    PREPARE:
 		  begin
-		    if(o_Input_Buffer_Offset_Address>=16'd1)
+		    if(o_Input_Buffer_Offset_Address>=16'd2)//Flag V1.1
 			  Next_State=WAIT;
 			else
 			  Next_State=PREPARE;
@@ -75,7 +75,7 @@ begin
 		  end	
 	    DATASEND:
 		  begin
-		    if(o_RDM_Data_Comp==1'b1)
+		    if(o_RDM_Data_Comp==1'b1)//Flag V1.1
 			  Next_State=DATACOMP;
 			else
 			  Next_State=DATASEND;
@@ -89,6 +89,7 @@ end
 
 reg [95:0]  i_Input_Buffer_RDM_Data_1D;
 reg [95:0]  i_Input_Buffer_RDM_Data_2D;
+reg [95:0]  i_Input_Buffer_RDM_Data_3D;
 reg         i_Input_Buffer_RDM_Data_Enable;
 
 always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
@@ -127,7 +128,7 @@ begin
 			 end
 		  else
 		     begin
-			   if((o_Input_Buffer_Offset_Address+i_Current_Combine_E01_Size[13:4]-Pre_Tail_Point[15:4])==16'd0)
+			   if(( (o_Input_Buffer_Offset_Address+i_Current_Combine_E01_Size[13:4])-Pre_Tail_Point[15:4] )==16'd0)
 			     begin
 				   i_Input_Buffer_RDM_Data_Enable<=1'b1;
 				   if(o_Input_Buffer_Offset_Address<i_Current_Combine_E01_Size[13:4])
@@ -152,6 +153,7 @@ begin
     begin
 	  i_Input_Buffer_RDM_Data_1D<=16'd0;
 	  i_Input_Buffer_RDM_Data_2D<=16'd0;
+	  i_Input_Buffer_RDM_Data_3D<=16'd0;	  
 	end
   else
     begin
@@ -159,6 +161,7 @@ begin
 	    begin
 	      i_Input_Buffer_RDM_Data_1D<=i_Input_Buffer_RDM_Data;
 	      i_Input_Buffer_RDM_Data_2D<=i_Input_Buffer_RDM_Data_1D;
+	      i_Input_Buffer_RDM_Data_3D<=i_Input_Buffer_RDM_Data_2D;		  
 		end
 	end
 end
@@ -177,14 +180,14 @@ begin
           if(Point_Ass_Counter<i_Current_Combine_Ncb_Size[15:4])
 		    begin
 			  if((Header_Point+16'd16)>i_Current_Combine_E01_Size)
-				Pre_Header_Point=Header_Point+16'd15-i_Current_Combine_E01_Size;  
+				Pre_Header_Point=((Header_Point+16'd15)-i_Current_Combine_E01_Size);  
 		      else
 			    Pre_Header_Point=Header_Point+16'd16;
 			end
 		  else
 		    begin
 			  if((Header_Point+i_Current_Combine_Ncb_Size[3:0]+1'd1)>i_Current_Combine_E01_Size)
-				Pre_Header_Point=Header_Point+i_Current_Combine_Ncb_Size[3:0]-i_Current_Combine_E01_Size;  
+				Pre_Header_Point=(Header_Point+i_Current_Combine_Ncb_Size[3:0])-i_Current_Combine_E01_Size;  
 		      else
 			    Pre_Header_Point=Header_Point+i_Current_Combine_Ncb_Size[3:0]+1'd1;		  
 			end	
