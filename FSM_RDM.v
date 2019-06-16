@@ -113,9 +113,9 @@ begin
 		end
 	  else if(Current_State==DATASEND)
 	    begin
-		  if(o_Input_Buffer_Offset_Address>Pre_Tail_Point[15:4])
+		  if(o_Input_Buffer_Offset_Address>=Pre_Tail_Point[15:4])
 		     begin
-			   if((o_Input_Buffer_Offset_Address-Pre_Tail_Point[15:4])<=16'd1)
+			   if((o_Input_Buffer_Offset_Address-Pre_Tail_Point[15:4])<=16'd3)
 			     begin
 				   i_Input_Buffer_RDM_Data_Enable<=1'b1;
 				   if(o_Input_Buffer_Offset_Address<i_Current_Combine_E01_Size[13:4])
@@ -128,7 +128,7 @@ begin
 			 end
 		  else
 		     begin
-			   if(( (o_Input_Buffer_Offset_Address+i_Current_Combine_E01_Size[13:4])-Pre_Tail_Point[15:4] )==16'd0)
+			   if(( (o_Input_Buffer_Offset_Address+i_Current_Combine_E01_Size[13:4])-Pre_Tail_Point[15:4] )==16'd2)
 			     begin
 				   i_Input_Buffer_RDM_Data_Enable<=1'b1;
 				   if(o_Input_Buffer_Offset_Address<i_Current_Combine_E01_Size[13:4])
@@ -196,6 +196,33 @@ begin
     Pre_Header_Point=Header_Point;
 end
 
+
+reg Current_Cache_Data_Enough;
+always @(*)
+begin 
+  if(Current_State==DATASEND)
+    begin
+		  if(o_Input_Buffer_Offset_Address>=Header_Point[15:4])
+		     begin
+			   if((o_Input_Buffer_Offset_Address-Header_Point[15:4])<=16'd3)
+                 Current_Cache_Data_Enough=1'b0;
+			   else
+			     Current_Cache_Data_Enough=1'b1;
+			 end
+		  else
+		     begin
+			   if(( (o_Input_Buffer_Offset_Address+i_Current_Combine_E01_Size[13:4])-Header_Point[15:4] )<=16'd2)
+                 Current_Cache_Data_Enough=1'b0;
+			   else
+			     Current_Cache_Data_Enough=1'b1;		 
+			 end
+	end
+  else
+    Current_Cache_Data_Enough=1'b0;
+end
+
+
+
 always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
 begin
   if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
@@ -212,7 +239,7 @@ begin
 	      Tail_Point<=16'd0;
 		  Point_Ass_Counter<=16'd0;
         end		  
-	  else
+	  else if(Current_Cache_Data_Enough==1'b1)
 	    begin
 		  Tail_Point<=Pre_Tail_Point;
 		  Header_Point<=Pre_Header_Point;
