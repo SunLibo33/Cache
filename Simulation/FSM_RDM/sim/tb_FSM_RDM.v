@@ -6,6 +6,16 @@ reg tb_rst_n;
 
 wire [15:0]o_Input_Buffer_Offset_Address;
 reg [5:0]tb_in_a;
+reg i_RDM_Data_Request;
+wire o_Input_Buffer_RDM_Data_Enable; 
+
+reg [95:0]Memory_RDM_Data;
+
+always @(posedge tb_sclk)
+begin
+  if(o_Input_Buffer_RDM_Data_Enable==1'b1)
+    Memory_RDM_Data<=o_Input_Buffer_Offset_Address;
+end
  
 initial 
   begin
@@ -18,13 +28,12 @@ initial
   
 initial 
   begin
+    i_RDM_Data_Request=1'b0;
+    #370
+    i_RDM_Data_Request=1'b1;   
  
   end  
-  
-  initial 
-  begin
-  	
-  end  
+ 
 
 always #10  tb_sclk=~tb_sclk; 
   
@@ -33,12 +42,13 @@ FSM_RDM FSM_RDM_instance
   .i_rx_rstn(tb_rst_n), 
   .i_rx_fsm_rstn(tb_rst_n), 			 
   .i_core_clk(tb_sclk), 
-  .i_Current_Combine_E01_Size(14'd138),
-  .i_Current_Combine_Ncb_Size(16'd98),
+  .i_Current_Combine_E01_Size(14'd129),
+  .i_Current_Combine_Ncb_Size(16'd110),
   .o_Input_Buffer_Offset_Address(o_Input_Buffer_Offset_Address),
-  .i_Input_Buffer_RDM_Data({{4{tb_in_a}},{12{6'd0}}}),
+  .i_Input_Buffer_RDM_Data({{4{tb_in_a}},{12{Memory_RDM_Data[5:0]}}}),
   .i_Combine_process_request(1'b1),
-  .i_RDM_Data_Request(1'b1)  
+  .i_RDM_Data_Request(i_RDM_Data_Request),
+  .o_Input_Buffer_RDM_Data_Enable(o_Input_Buffer_RDM_Data_Enable)  
  
 );
 

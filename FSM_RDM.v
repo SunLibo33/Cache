@@ -18,7 +18,10 @@ module FSM_RDM
   input wire         i_RDM_Data_Request,  
   output wire        o_RDM_Data_Valid,  
   output wire        o_RDM_Data_Comp,
-  output wire [95:0] o_RDM_Data_Content
+  output wire [95:0] o_RDM_Data_Content,
+  output reg         o_Input_Buffer_RDM_Data_Enable,
+  output wire [11:0] HeadPonitH, //Only for testing
+  output wire [11:0] Tail_PointH //Only for testing
  
 );
 
@@ -30,6 +33,13 @@ parameter DATACOMP = 8'b0001_0000;
 
 reg [7:0]Current_State = IDLE;
 reg [7:0]Next_State    = IDLE;
+reg [95:0]  i_Input_Buffer_RDM_Data_1D;
+reg [95:0]  i_Input_Buffer_RDM_Data_2D;
+reg [95:0]  i_Input_Buffer_RDM_Data_3D;
+reg [15:0]Header_Point,Tail_Point;
+reg [15:0]Pre_Header_Point;
+reg [15:0]Pre_Tail_Point;
+reg [15:0]Point_Ass_Counter;
 
 always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
 begin
@@ -61,7 +71,7 @@ begin
 		  end
 	    PREPARE:
 		  begin
-		    if(o_Input_Buffer_Offset_Address>=16'd2)//Flag V1.1
+		    if(o_Input_Buffer_Offset_Address>=16'd3)//Flag V1.1
 			  Next_State=WAIT;
 			else
 			  Next_State=PREPARE;
@@ -87,29 +97,24 @@ begin
 	end
 end
 
-reg [95:0]  i_Input_Buffer_RDM_Data_1D;
-reg [95:0]  i_Input_Buffer_RDM_Data_2D;
-reg [95:0]  i_Input_Buffer_RDM_Data_3D;
-reg         i_Input_Buffer_RDM_Data_Enable;
+
 
 always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
 begin
   if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
     begin
 	  o_Input_Buffer_Offset_Address<=16'd0;
-	  i_Input_Buffer_RDM_Data_Enable<=1'b0;
 	end
   else
     begin
 	  if(Current_State==IDLE)
 	    begin
 	      o_Input_Buffer_Offset_Address<=16'd0;
-		  i_Input_Buffer_RDM_Data_Enable<=1'b0;
 		end
-	  else if(Current_State==PREPARE)
+	  //else if((Current_State==PREPARE)||((Current_State==WAIT)&&(i_RDM_Data_Request==1'b1)))
+      else if(Current_State==PREPARE)
 	    begin
 	      o_Input_Buffer_Offset_Address<=o_Input_Buffer_Offset_Address+16'd1;
-		  i_Input_Buffer_RDM_Data_Enable<=1'b1;
 		end
 	  else if(Current_State==DATASEND)
 	    begin
@@ -117,32 +122,58 @@ begin
 		     begin
 			   if((o_Input_Buffer_Offset_Address-Pre_Tail_Point[15:4])<=16'd3)
 			     begin
-				   i_Input_Buffer_RDM_Data_Enable<=1'b1;
 				   if(o_Input_Buffer_Offset_Address<i_Current_Combine_E01_Size[13:4])
 				     o_Input_Buffer_Offset_Address<=o_Input_Buffer_Offset_Address+16'd1;
 				   else
 					 o_Input_Buffer_Offset_Address<=16'd0;				   
 				 end
-			  else
-			    i_Input_Buffer_RDM_Data_Enable<=1'b0;
 			 end
 		  else
 		     begin
-			   if(( (o_Input_Buffer_Offset_Address+i_Current_Combine_E01_Size[13:4])-Pre_Tail_Point[15:4] )==16'd2)
+			   if(( (o_Input_Buffer_Offset_Address+i_Current_Combine_E01_Size[13:4])-Pre_Tail_Point[15:4] )<=16'd2)
 			     begin
-				   i_Input_Buffer_RDM_Data_Enable<=1'b1;
 				   if(o_Input_Buffer_Offset_Address<i_Current_Combine_E01_Size[13:4])
 				     o_Input_Buffer_Offset_Address<=o_Input_Buffer_Offset_Address+16'd1;
 				   else
 					 o_Input_Buffer_Offset_Address<=16'd0;				   
 				 end
+			 end
+		end	
+	end
+end
+
+
+always @(*)
+begin
+  if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
+	  o_Input_Buffer_RDM_Data_Enable=1'b0;
+  else
+    begin
+	  if(Current_State==IDLE)
+		o_Input_Buffer_RDM_Data_Enable=1'b0;
+	  //else if((Current_State==PREPARE)||((Current_State==WAIT)&&(i_RDM_Data_Request==1'b1)))
+      else if(Current_State==PREPARE)
+		o_Input_Buffer_RDM_Data_Enable=1'b1;
+	  else if(Current_State==DATASEND)
+	    begin
+		  if(o_Input_Buffer_Offset_Address>=Pre_Tail_Point[15:4])
+		     begin
+			   if((o_Input_Buffer_Offset_Address-Pre_Tail_Point[15:4])<=16'd3)
+				o_Input_Buffer_RDM_Data_Enable=1'b1;		   
+			  else
+			    o_Input_Buffer_RDM_Data_Enable=1'b0;
+			 end
+		  else
+		     begin
+			   if(( (o_Input_Buffer_Offset_Address+i_Current_Combine_E01_Size[13:4])-Pre_Tail_Point[15:4] )<=16'd2)
+				 o_Input_Buffer_RDM_Data_Enable=1'b1;		   
                else
-			     i_Input_Buffer_RDM_Data_Enable<=1'b0; 
+			     o_Input_Buffer_RDM_Data_Enable=1'b0; 
 			 end
 		end	
 	  else
 	    begin
-		  i_Input_Buffer_RDM_Data_Enable<=1'b0;
+		  o_Input_Buffer_RDM_Data_Enable=1'b0;
 		end		
 	end
 end
@@ -157,7 +188,7 @@ begin
 	end
   else
     begin
-	  if(i_Input_Buffer_RDM_Data_Enable==1'b1)
+	  if(o_Input_Buffer_RDM_Data_Enable==1'b1)
 	    begin
 	      i_Input_Buffer_RDM_Data_1D<=i_Input_Buffer_RDM_Data;
 	      i_Input_Buffer_RDM_Data_2D<=i_Input_Buffer_RDM_Data_1D;
@@ -166,16 +197,12 @@ begin
 	end
 end
 
-reg [15:0]Header_Point,Tail_Point;
-reg [15:0]Pre_Header_Point;
-reg [15:0]Pre_Tail_Point;
-reg [15:0]Point_Ass_Counter;
 
 always @(*)
 begin 
   if(Current_State==DATASEND)
     begin
-          if(Point_Ass_Counter<i_Current_Combine_Ncb_Size[15:4])
+          if((Point_Ass_Counter+1'd1)!=i_Current_Combine_Ncb_Size[15:4])
 		    begin
 			  if((Header_Point+16'd16)>i_Current_Combine_E01_Size)
 				Pre_Header_Point=((Header_Point+16'd15)-i_Current_Combine_E01_Size);  
@@ -216,14 +243,14 @@ begin
     begin
 		  if(o_Input_Buffer_Offset_Address>=Header_Point[15:4])
 		     begin
-			   if((o_Input_Buffer_Offset_Address-Header_Point[15:4])<=16'd3)
+			   if((o_Input_Buffer_Offset_Address+o_Input_Buffer_RDM_Data_Enable-Header_Point[15:4])<=16'd2)
                  Current_Cache_Data_Enough=1'b0;
 			   else
 			     Current_Cache_Data_Enough=1'b1;
 			 end
 		  else
 		     begin
-			   if(( (o_Input_Buffer_Offset_Address+i_Current_Combine_E01_Size[13:4])-Header_Point[15:4] )<=16'd2)
+			   if(( (o_Input_Buffer_Offset_Address+o_Input_Buffer_RDM_Data_Enable+i_Current_Combine_E01_Size[13:4])-Header_Point[15:4] )<=16'd1)
                  Current_Cache_Data_Enough=1'b0;
 			   else
 			     Current_Cache_Data_Enough=1'b1;		 
@@ -232,7 +259,6 @@ begin
   else
     Current_Cache_Data_Enough=1'b0;
 end
-
 
 
 always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
@@ -263,5 +289,16 @@ begin
 	end
 end
 
+wire [5:0]i_Input_Buffer_RDM_DataL;//Only for testing
+wire [5:0]i_Input_Buffer_RDM_Data_1DL;//Only for testing
+wire [5:0]i_Input_Buffer_RDM_Data_2DL;//Only for testing
+wire [5:0]i_Input_Buffer_RDM_Data_3DL;//Only for testing
+
+assign HeadPonitH=Header_Point[15:4];//Only for testing
+assign Tail_PointH=Tail_Point[15:4];//Only for testing
+assign i_Input_Buffer_RDM_DataL=i_Input_Buffer_RDM_Data[5:0];//Only for testing
+assign i_Input_Buffer_RDM_Data_1DL=i_Input_Buffer_RDM_Data_1D[5:0];//Only for testing
+assign i_Input_Buffer_RDM_Data_2DL=i_Input_Buffer_RDM_Data_2D[5:0];//Only for testing
+assign i_Input_Buffer_RDM_Data_3DL=i_Input_Buffer_RDM_Data_3D[5:0];//Only for testing
 
 endmodule
