@@ -12,6 +12,8 @@ vsim -voptargs=+acc work.tb_FSM_RDM
 
 add wave -color red tb_FSM_RDM/FSM_RDM_instance/i_core_clk
 add wave -color red tb_FSM_RDM/FSM_RDM_instance/Current_Cache_Data_Enough
+add wave -color green tb_FSM_RDM/FSM_RDM_instance/o_RDM_Data_Valid
+add wave -decimal -color green tb_FSM_RDM/FSM_RDM_instance/o_RDM_Data_Content
 add wave -decimal -color green tb_FSM_RDM/FSM_RDM_instance/o_Input_Buffer_Offset_Address
 add wave -decimal -color blue tb_FSM_RDM/FSM_RDM_instance/HeadPonitH
 add wave -decimal -color blue tb_FSM_RDM/FSM_RDM_instance/Tail_PointH

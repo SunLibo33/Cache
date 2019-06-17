@@ -16,9 +16,9 @@ module FSM_RDM
   input wire [3:0]   i_Combine_user_index,  
   input wire         i_Combine_process_request,
   input wire         i_RDM_Data_Request,  
-  output wire        o_RDM_Data_Valid,  
+  output reg         o_RDM_Data_Valid,  
   output wire        o_RDM_Data_Comp,
-  output wire [95:0] o_RDM_Data_Content,
+  output reg [95:0]  o_RDM_Data_Content,
   output reg         o_Input_Buffer_RDM_Data_Enable,
   output wire [11:0] HeadPonitH, //Only for testing
   output wire [11:0] Tail_PointH //Only for testing
@@ -288,6 +288,71 @@ begin
 		end
 	end
 end
+
+always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
+begin
+  if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
+    begin
+	  o_RDM_Data_Valid<=1'b0;
+	end
+  else
+    begin
+      if(Current_State==DATASEND)
+        o_RDM_Data_Valid<=Current_Cache_Data_Enough;
+      else
+        o_RDM_Data_Valid<=1'b0;
+    end
+end
+
+reg [3:0]Header_Tail_Point_Common_Diff;
+always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
+begin
+  if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
+    begin
+	  o_RDM_Data_Content<=96'd0;
+	end
+  else
+    begin
+      if(Current_State==DATASEND)
+        begin
+          if(Header_Point[15:4]==Tail_Point[15:4])
+            begin
+              case(Header_Tail_Point_Common_Diff)
+                4'd2:  o_RDM_Data_Content<=(i_Input_Buffer_RDM_Data_1D>>(6*Tail_Point[3:0]));
+                4'd3:  o_RDM_Data_Content<=(i_Input_Buffer_RDM_Data_2D>>(6*Tail_Point[3:0]));
+                4'd4:  o_RDM_Data_Content<=(i_Input_Buffer_RDM_Data_3D>>(6*Tail_Point[3:0]));
+                default: o_RDM_Data_Content<=96'd0;
+              endcase 
+            end
+          else
+            begin
+              o_RDM_Data_Content<=96'd18;//Flag V1.3
+            end
+        end
+      else
+        o_RDM_Data_Content<=96'd0;
+    end
+end
+
+
+always @(*)
+begin 
+  if(Current_State==DATASEND)
+    begin
+      if(o_Input_Buffer_Offset_Address>=Header_Point[15:4])
+	    begin
+          Header_Tail_Point_Common_Diff=o_Input_Buffer_Offset_Address-Header_Point[15:4];
+	    end
+	  else
+		begin
+		  Header_Tail_Point_Common_Diff=(o_Input_Buffer_Offset_Address+1'd1+i_Current_Combine_E01_Size[13:4])-Header_Point[15:4];	   
+	    end
+	end
+  else
+    Header_Tail_Point_Common_Diff=4'd0;
+end
+
+
 
 wire [5:0]i_Input_Buffer_RDM_DataL;//Only for testing
 wire [5:0]i_Input_Buffer_RDM_Data_1DL;//Only for testing
