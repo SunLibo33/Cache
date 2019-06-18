@@ -17,35 +17,28 @@ n@_opt
 OL;O;10.2c;57
 Z3 dE:/CASA/Cache/Simulation/FSM_RDM/sim
 !s110 1560694160
-T_opt1
-Z4 !s110 1560841295
-V[fJTGo=YMzl_b2YT^FHPz3
-R1
-=1-847beb39f64b-5d088c4f-1b9-3454
-R2
-n@_opt1
-OL;O;10.2;57
 vFSM_RDM
-IkKPjEc`K46dbU10_5USD]0
+Z4 !s110 1560849649
+I=HZ7n^cOa>iY]WcaO<NVz3
 Z5 V`JN@9S9cnhjKRR_L]QIcM3
 Z6 dC:\Work\MyGit\Cache\Simulation\FSM_RDM\sim
-w1560839289
+w1560847206
 8./../design/FSM_RDM.v
 F./../design/FSM_RDM.v
 L0 5
 Z7 OL;L;10.2;57
 r1
 31
+!s90 -reportprogress|300|./../design/FSM_RDM.v|
 Z8 o-L mtiAvm -L mtiOvm -L mtiUvm -L mtiUPF
 n@f@s@m_@r@d@m
-!s100 NGSLBKZkCPDdOPMHh^EIR2
-!s90 -reportprogress|300|./../design/FSM_RDM.v|
-R4
 !i10b 1
+!s100 PmPfo6@P7U_bcT3l`cBSR2
 !s85 0
-!s108 1560841295.056000
+!s108 1560849649.794000
 !s107 ./../design/FSM_RDM.v|
 vtb_FSM_RDM
+!s100 5^cjU7WkVOg09;T_o3J^G0
 I[5GLcalSUQMmWX>ZPdVUg3
 R5
 R6
@@ -56,12 +49,11 @@ L0 2
 R7
 r1
 31
+!s90 -reportprogress|300|./tb_FSM_RDM.v|
 R8
 ntb_@f@s@m_@r@d@m
-!s90 -reportprogress|300|./tb_FSM_RDM.v|
-!s110 1560841294
-!s100 5^cjU7WkVOg09;T_o3J^G0
-!s108 1560841294.965000
+R4
+!s108 1560849649.701000
 !s107 ./tb_FSM_RDM.v|
 !i10b 1
 !s85 0

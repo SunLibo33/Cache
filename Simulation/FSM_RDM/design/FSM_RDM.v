@@ -117,15 +117,15 @@ generate
         always @(*)
           begin        
                     case(users_qm_shift)
-                      4'd0: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]<= i_Input_Buffer_RDM_Data_ALL[(i*48+5):(i*48)];
-                      4'd1: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]<= i_Input_Buffer_RDM_Data_ALL[(i*48+11):(i*48+6)];
-                      4'd2: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]<= i_Input_Buffer_RDM_Data_ALL[(i*48+17):(i*48+12)];
-                      4'd3: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]<= i_Input_Buffer_RDM_Data_ALL[(i*48+23):(i*48+18)];
-                      4'd4: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]<= i_Input_Buffer_RDM_Data_ALL[(i*48+29):(i*48+24)];
-                      4'd5: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]<= i_Input_Buffer_RDM_Data_ALL[(i*48+35):(i*48+30)];
-                      4'd6: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]<= i_Input_Buffer_RDM_Data_ALL[(i*48+41):(i*48+36)];
-                      4'd7: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]<= i_Input_Buffer_RDM_Data_ALL[(i*48+47):(i*48+42)];
-                      default: i_Input_Buffer_RDM_Data_Wi<=96'd0;
+                      4'd0: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]= i_Input_Buffer_RDM_Data_ALL[(i*48+5):(i*48)];
+                      4'd1: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]= i_Input_Buffer_RDM_Data_ALL[(i*48+11):(i*48+6)];
+                      4'd2: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]= i_Input_Buffer_RDM_Data_ALL[(i*48+17):(i*48+12)];
+                      4'd3: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]= i_Input_Buffer_RDM_Data_ALL[(i*48+23):(i*48+18)];
+                      4'd4: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]= i_Input_Buffer_RDM_Data_ALL[(i*48+29):(i*48+24)];
+                      4'd5: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]= i_Input_Buffer_RDM_Data_ALL[(i*48+35):(i*48+30)];
+                      4'd6: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]= i_Input_Buffer_RDM_Data_ALL[(i*48+41):(i*48+36)];
+                      4'd7: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]= i_Input_Buffer_RDM_Data_ALL[(i*48+47):(i*48+42)];
+                      default: i_Input_Buffer_RDM_Data_Wi=96'd0;
                     endcase    
 		  end
       end

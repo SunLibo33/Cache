@@ -17,7 +17,7 @@ module FSM_RDM
   input wire         i_Combine_process_request,
   input wire         i_RDM_Data_Request,  
   output reg         o_RDM_Data_Valid,  
-  output wire        o_RDM_Data_Comp,
+  output reg         o_RDM_Data_Comp,
   output reg [95:0]  o_RDM_Data_Content
 
  
@@ -38,7 +38,7 @@ reg [15:0]Header_Point,Tail_Point;
 reg [15:0]Pre_Header_Point;
 reg [15:0]Pre_Tail_Point;
 reg [15:0]Point_Ass_Counter;
-reg         o_Input_Buffer_RDM_Data_Enable;
+reg       o_Input_Buffer_RDM_Data_Enable;
 
 
 
@@ -117,15 +117,15 @@ generate
         always @(*)
           begin        
                     case(users_qm_shift)
-                      4'd0: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]<= i_Input_Buffer_RDM_Data_ALL[(i*48+5):(i*48)];
-                      4'd1: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]<= i_Input_Buffer_RDM_Data_ALL[(i*48+11):(i*48+6)];
-                      4'd2: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]<= i_Input_Buffer_RDM_Data_ALL[(i*48+17):(i*48+12)];
-                      4'd3: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]<= i_Input_Buffer_RDM_Data_ALL[(i*48+23):(i*48+18)];
-                      4'd4: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]<= i_Input_Buffer_RDM_Data_ALL[(i*48+29):(i*48+24)];
-                      4'd5: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]<= i_Input_Buffer_RDM_Data_ALL[(i*48+35):(i*48+30)];
-                      4'd6: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]<= i_Input_Buffer_RDM_Data_ALL[(i*48+41):(i*48+36)];
-                      4'd7: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]<= i_Input_Buffer_RDM_Data_ALL[(i*48+47):(i*48+42)];
-                      default: i_Input_Buffer_RDM_Data_Wi<=96'd0;
+                      4'd0: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]= i_Input_Buffer_RDM_Data_ALL[(i*48+5):(i*48)];
+                      4'd1: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]= i_Input_Buffer_RDM_Data_ALL[(i*48+11):(i*48+6)];
+                      4'd2: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]= i_Input_Buffer_RDM_Data_ALL[(i*48+17):(i*48+12)];
+                      4'd3: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]= i_Input_Buffer_RDM_Data_ALL[(i*48+23):(i*48+18)];
+                      4'd4: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]= i_Input_Buffer_RDM_Data_ALL[(i*48+29):(i*48+24)];
+                      4'd5: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]= i_Input_Buffer_RDM_Data_ALL[(i*48+35):(i*48+30)];
+                      4'd6: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]= i_Input_Buffer_RDM_Data_ALL[(i*48+41):(i*48+36)];
+                      4'd7: i_Input_Buffer_RDM_Data_Wi[(i*6+5):(i*6)]= i_Input_Buffer_RDM_Data_ALL[(i*48+47):(i*48+42)];
+                      default: i_Input_Buffer_RDM_Data_Wi=96'd0;
                     endcase    
 		  end
       end
@@ -163,7 +163,19 @@ begin
 end
 
  
-
+always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
+begin
+  if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
+    o_RDM_Data_Comp<=1'b0;
+  else
+    begin
+      if(Current_State==IDLE)
+        o_RDM_Data_Comp<=1'b0;
+      else if(Current_State==DATACOMP)
+        o_RDM_Data_Comp<=1'b1; 
+    end   
+end
+ 
 always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
 begin
   if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
