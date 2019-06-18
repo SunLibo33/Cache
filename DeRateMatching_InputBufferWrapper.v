@@ -113,8 +113,8 @@ module DeRateMatching_InputBufferWrapper
   
   };
 
-  DualPort_SRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
-  DualPort_SRAM_U1 
+  DualPort_ASRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
+  DualPort_ASRAM_U1 
   (
   .wraddress    ( InputBufferWriteAddress_Common[DeRateMatching_InputBuffer_AddressW-1:0] ),
   .data    ( InputBufferWriteData_U1[DeRateMatching_InputBuffer_DataW-1:0] ),
@@ -124,8 +124,8 @@ module DeRateMatching_InputBufferWrapper
   .q  ( InputBufferReadData_U1[DeRateMatching_InputBuffer_DataW-1:0])
   );
 
-  DualPort_SRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
-  DualPort_SRAM_U2 
+  DualPort_ASRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
+  DualPort_ASRAM_U2 
   (
   .wraddress    ( InputBufferWriteAddress_Common[DeRateMatching_InputBuffer_AddressW-1:0] ),
   .data    ( InputBufferWriteData_U2[DeRateMatching_InputBuffer_DataW-1:0]),
@@ -135,8 +135,8 @@ module DeRateMatching_InputBufferWrapper
   .q  ( InputBufferReadData_U2[DeRateMatching_InputBuffer_DataW-1:0])
   );  
 
-  DualPort_SRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
-  DualPort_SRAM_U3 
+  DualPort_ASRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
+  DualPort_ASRAM_U3 
   (
   .wraddress    ( InputBufferWriteAddress_Common[DeRateMatching_InputBuffer_AddressW-1:0] ),
   .data    ( InputBufferWriteData_U3[DeRateMatching_InputBuffer_DataW-1:0] ),
@@ -148,8 +148,8 @@ module DeRateMatching_InputBufferWrapper
 
   
  
-  DualPort_SRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
-  DualPort_SRAM_U4 
+  DualPort_ASRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
+  DualPort_ASRAM_U4 
   (
   .wraddress    ( InputBufferWriteAddress_Common[DeRateMatching_InputBuffer_AddressW-1:0] ),
   .data    ( InputBufferWriteData_U4[DeRateMatching_InputBuffer_DataW-1:0] ),
@@ -159,8 +159,8 @@ module DeRateMatching_InputBufferWrapper
   .q  ( InputBufferReadData_U4[DeRateMatching_InputBuffer_DataW-1:0])
   );  
 
-  DualPort_SRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
-  DualPort_SRAM_U5 
+  DualPort_ASRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
+  DualPort_ASRAM_U5 
   (
   .wraddress    ( InputBufferWriteAddress_Common[DeRateMatching_InputBuffer_AddressW-1:0] ),
   .data    ( InputBufferWriteData_U5[DeRateMatching_InputBuffer_DataW-1:0]) ,
@@ -170,8 +170,8 @@ module DeRateMatching_InputBufferWrapper
   .q  ( InputBufferReadData_U5[DeRateMatching_InputBuffer_DataW-1:0])
   );
 
-  DualPort_SRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
-  DualPort_SRAM_U6 
+  DualPort_ASRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
+  DualPort_ASRAM_U6 
   (
   .wraddress    ( InputBufferWriteAddress_Common[DeRateMatching_InputBuffer_AddressW-1:0] ),
   .data    ( InputBufferWriteData_U6[DeRateMatching_InputBuffer_DataW-1:0] ),
@@ -181,8 +181,8 @@ module DeRateMatching_InputBufferWrapper
   .q  ( InputBufferReadData_U6[DeRateMatching_InputBuffer_DataW-1:0])
   );  
 
-  DualPort_SRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
-  DualPort_SRAM_U7 
+  DualPort_ASRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
+  DualPort_ASRAM_U7 
   (
   .wraddress    ( InputBufferWriteAddress_Common[DeRateMatching_InputBuffer_AddressW-1:0] ),
   .data    ( InputBufferWriteData_U7[DeRateMatching_InputBuffer_DataW-1:0] ),
@@ -192,8 +192,8 @@ module DeRateMatching_InputBufferWrapper
   .q  ( InputBufferReadData_U7[DeRateMatching_InputBuffer_DataW-1:0])
   );
 
-  DualPort_SRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
-  DualPort_SRAM_U8
+  DualPort_ASRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
+  DualPort_ASRAM_U8
   (
   .wraddress    ( InputBufferWriteAddress_Common[DeRateMatching_InputBuffer_AddressW-1:0] ),
   .data    ( InputBufferWriteData_U8[DeRateMatching_InputBuffer_DataW-1:0] ),
@@ -203,8 +203,8 @@ module DeRateMatching_InputBufferWrapper
   .q  ( InputBufferReadData_U8[DeRateMatching_InputBuffer_DataW-1:0])
   );   
 
-  DualPort_SRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
-  DualPort_SRAM_U9 
+  DualPort_ASRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
+  DualPort_ASRAM_U9 
   (
   .wraddress    ( InputBufferWriteAddress_Common[DeRateMatching_InputBuffer_AddressW-1:0] ),
   .data    ( InputBufferWriteData_U9[DeRateMatching_InputBuffer_DataW-1:0] ),
@@ -214,8 +214,8 @@ module DeRateMatching_InputBufferWrapper
   .q  ( InputBufferReadData_U9[DeRateMatching_InputBuffer_DataW-1:0])
   );
 
-  DualPort_SRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
-  DualPort_SRAM_U10 
+  DualPort_ASRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
+  DualPort_ASRAM_U10 
   (
   .wraddress    ( InputBufferWriteAddress_Common[DeRateMatching_InputBuffer_AddressW-1:0] ),
   .data    ( InputBufferWriteData_U10[DeRateMatching_InputBuffer_DataW-1:0] ) ,
@@ -225,8 +225,8 @@ module DeRateMatching_InputBufferWrapper
   .q  ( InputBufferReadData_U10[DeRateMatching_InputBuffer_DataW-1:0])
   );  
 
-  DualPort_SRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
-  DualPort_SRAM_U11 
+  DualPort_ASRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
+  DualPort_ASRAM_U11 
   (
   .wraddress    ( InputBufferWriteAddress_Common[DeRateMatching_InputBuffer_AddressW-1:0] ),
   .data    ( InputBufferWriteData_U11[DeRateMatching_InputBuffer_DataW-1:0]) ,
@@ -236,8 +236,8 @@ module DeRateMatching_InputBufferWrapper
   .q  ( InputBufferReadData_U11[DeRateMatching_InputBuffer_DataW-1:0])
   );
 
-  DualPort_SRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
-  DualPort_SRAM_U12 
+  DualPort_ASRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
+  DualPort_ASRAM_U12 
   (
   .wraddress    ( InputBufferWriteAddress_Common[DeRateMatching_InputBuffer_AddressW-1:0] ),
   .data    ( InputBufferWriteData_U12[DeRateMatching_InputBuffer_DataW-1:0] ),
@@ -247,8 +247,8 @@ module DeRateMatching_InputBufferWrapper
   .q  ( InputBufferReadData_U12[DeRateMatching_InputBuffer_DataW-1:0])
   );  
 
-  DualPort_SRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
-  DualPort_SRAM_U13 
+  DualPort_ASRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
+  DualPort_ASRAM_U13 
   (
   .wraddress    ( InputBufferWriteAddress_Common[DeRateMatching_InputBuffer_AddressW-1:0] ),
   .data    ( InputBufferWriteData_U13[DeRateMatching_InputBuffer_DataW-1:0] ),
@@ -258,8 +258,8 @@ module DeRateMatching_InputBufferWrapper
   .q  ( InputBufferReadData_U13[DeRateMatching_InputBuffer_DataW-1:0])
   );
 
-  DualPort_SRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
-  DualPort_SRAM_U14 
+  DualPort_ASRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
+  DualPort_ASRAM_U14 
   (
   .wraddress    ( InputBufferWriteAddress_Common[DeRateMatching_InputBuffer_AddressW-1:0] ),
   .data    ( InputBufferWriteData_U14[DeRateMatching_InputBuffer_DataW-1:0] ),
@@ -269,8 +269,8 @@ module DeRateMatching_InputBufferWrapper
   .q  ( InputBufferReadData_U14[DeRateMatching_InputBuffer_DataW-1:0])
   );  
 
-  DualPort_SRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
-  DualPort_SRAM_U15
+  DualPort_ASRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
+  DualPort_ASRAM_U15
   (
   .wraddress    ( InputBufferWriteAddress_Common[DeRateMatching_InputBuffer_AddressW-1:0] ),
   .data    ( InputBufferWriteData_U15[DeRateMatching_InputBuffer_DataW-1:0] ),
@@ -280,8 +280,8 @@ module DeRateMatching_InputBufferWrapper
   .q  ( InputBufferReadData_U15[DeRateMatching_InputBuffer_DataW-1:0])
   );
 
-  DualPort_SRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
-  DualPort_SRAM_U16
+  DualPort_ASRAM  #(DeRateMatching_InputBuffer_DataW,DeRateMatching_InputBuffer_AddressW)
+  DualPort_ASRAM_U16
   (
   .wraddress    ( InputBufferWriteAddress_Common[DeRateMatching_InputBuffer_AddressW-1:0] ),
   .data    ( InputBufferWriteData_U16[DeRateMatching_InputBuffer_DataW-1:0] ),

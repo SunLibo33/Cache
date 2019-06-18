@@ -835,7 +835,7 @@ FSM_RDM FSM_RDM_U1
   .i_core_clk(i_core_clk), 
   .i_Current_Combine_E01_Size(io_Current_Combine_E01_Size),
   .i_Current_Combine_Ncb_Size(io_Current_Combine_Ncb_Size),
-  .o_Input_Buffer_Offset_Address(io_Input_Buffer_Offset_Address),//Flag V1.1
+  .o_Input_Buffer_Offset_Address(io_Input_Buffer_Offset_Address),
   .i_Input_Buffer_RDM_Data_ALL(InputBufferReadDataCommon),
   .i_users_qm(i_users_qm),
   .i_Combine_user_index(io_Combine_user_index),  
