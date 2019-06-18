@@ -62,7 +62,7 @@ always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
 begin
   if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
 	users_qm_shift<=4'd0;
-  else if(Current_State!=DATASEND)
+  else if(Current_State==IDLE)
     users_qm_shift<=4'd0;
   else if(o_Input_Buffer_Offset_Address==16'd0)
     users_qm_shift<=users_qm_shift+4'd1;
@@ -146,6 +146,21 @@ begin
     end
 end
 
+wire ESize_Data_Process_Comp;
+reg [3:0]ESize_Data_Process_Comp_Reg;
+
+assign ESize_Data_Process_Comp=ESize_Data_Process_Comp_Reg[3];
+
+always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
+begin
+  if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
+    ESize_Data_Process_Comp_Reg<=4'd0;
+  else if(Current_State==IDLE)
+    ESize_Data_Process_Comp_Reg<=4'd0;
+  else if(users_qm_shift>=current_users_qm)
+    ESize_Data_Process_Comp_Reg<=({ESize_Data_Process_Comp_Reg[2:0],1'b1});
+end
+
  
 
 always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
@@ -192,7 +207,7 @@ begin
 		  end	
 	    DATASEND:
 		  begin
-		    if(o_RDM_Data_Comp==1'b1)//Flag V1.1
+		    if(ESize_Data_Process_Comp==1'b1) 
 			  Next_State=DATACOMP;
 			else
 			  Next_State=DATASEND;

@@ -11,13 +11,13 @@ wire o_Input_Buffer_RDM_Data_Enable;
 
 reg [95:0]Memory_RDM_Data;
 
-always @(posedge tb_sclk)
+always @(*)
 begin
   if(o_Input_Buffer_RDM_Data_Enable==1'b1)
     if(o_Input_Buffer_Offset_Address==16'd0)
-      Memory_RDM_Data<=96'd1;
+      Memory_RDM_Data=96'd1;
     else
-      Memory_RDM_Data<=o_Input_Buffer_Offset_Address;
+      Memory_RDM_Data=o_Input_Buffer_Offset_Address;
 end
  
 initial 
@@ -48,10 +48,13 @@ FSM_RDM FSM_RDM_instance
   .i_Current_Combine_E01_Size(14'd129),
   .i_Current_Combine_Ncb_Size(16'd110),
   .o_Input_Buffer_Offset_Address(o_Input_Buffer_Offset_Address),
-  .i_Input_Buffer_RDM_Data({{14{6'd0}},{6'd0},{1{Memory_RDM_Data[5:0]}}}),
+  .i_Input_Buffer_RDM_Data_ALL({{128{Memory_RDM_Data[5:0]}}}),
   .i_Combine_process_request(1'b1),
   .i_RDM_Data_Request(i_RDM_Data_Request),
-  .o_Input_Buffer_RDM_Data_Enable(o_Input_Buffer_RDM_Data_Enable)  
+  .o_Input_Buffer_RDM_Data_Enable(o_Input_Buffer_RDM_Data_Enable),  
+  .i_users_qm(4'd6),
+  .i_Combine_user_index(4'd0)
+
  
 );
 
