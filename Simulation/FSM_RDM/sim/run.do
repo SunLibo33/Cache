@@ -16,6 +16,7 @@ add wave -color green tb_FSM_RDM/FSM_RDM_instance/o_RDM_Data_Valid
 add wave -decimal -color green tb_FSM_RDM/FSM_RDM_instance/o_RDM_Data_Content
 add wave -decimal -color green tb_FSM_RDM/FSM_RDM_instance/o_Input_Buffer_Offset_Address
 add wave -decimal -color green tb_FSM_RDM/FSM_RDM_instance/users_qm_shift
+add wave -decimal -color green tb_FSM_RDM/FSM_RDM_instance/i_Input_Buffer_RDM_Data
 add wave -decimal -color blue tb_FSM_RDM/FSM_RDM_instance/HeadPonitH
 add wave -decimal -color blue tb_FSM_RDM/FSM_RDM_instance/Tail_PointH
 add wave -decimal -color green tb_FSM_RDM/FSM_RDM_instance/Header_Point

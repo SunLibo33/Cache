@@ -12,7 +12,7 @@ module FSM_Combine
   output wire       o_current_cb_combine_comp,
   input wire        i_Combine_process_request,
   input wire [3:0]  i_Combine_user_index,
-  output wire       o_RDM_Data_Request,
+  output reg       o_RDM_Data_Request,
   input wire        i_RDM_Data_Valid,  
   input wire [95:0] i_RDM_Data_Content,
   input wire        i_RDM_Data_Comp, 

@@ -18,7 +18,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 			
 			
-module DeRateMatching
+module DeRateMatchingTOP
 #(parameter DeRateMatching_InputBuffer_DataW=48, parameter DeRateMatching_InputBuffer_AddressW=11)
 (
     input wire       i_rx_rstn, //Active low asynchronous signal to reset flip-flops of all submodules of bs_ul_rx 
@@ -787,6 +787,29 @@ FSM_TOP FSM_TOP_U1
  
 );
 
+/* reg [13:0]io_Current_Combine_E01_Size;
+reg [15:0]io_Current_Combine_Ncb_Size; */
+
+FSM_RDM FSM_RDM_U1
+(
+  .i_rx_rstn(i_rx_rstn), 
+  .i_rx_fsm_rstn(i_rx_fsm_rstn), 			 
+  .i_core_clk(i_core_clk), 
+  .i_Current_Combine_E01_Size(io_Current_Combine_E01_Size),
+  .i_Current_Combine_Ncb_Size(io_Current_Combine_Ncb_Size),
+  output reg [15:0]  o_Input_Buffer_Offset_Address,
+  .i_Input_Buffer_RDM_Data_ALL(InputBufferReadDataCommon),
+  .i_users_qm(i_users_qm),
+  .i_Combine_user_index(io_Combine_user_index),  
+  .i_Combine_process_request((io_Combine_process_request),),
+  .i_RDM_Data_Request(io_RDM_Data_Request),  
+  .o_RDM_Data_Valid(io_RDM_Data_Valid),  
+  .o_RDM_Data_Comp(io_RDM_Data_Comp),
+  .o_RDM_Data_Content(io_RDM_Data_Content)
+
+);
+
+
 wire io_RDM_Data_Request;	
 wire io_RDM_Data_Valid;
 wire [95:0] io_RDM_Data_Content;
@@ -812,6 +835,8 @@ FSM_Combine FSM_Combine_U1
 
  
 	
+    
+    
 	
 endmodule
 

@@ -11,17 +11,15 @@ module FSM_RDM
   input wire [13:0]  i_Current_Combine_E01_Size,
   input wire [15:0]  i_Current_Combine_Ncb_Size,
   output reg [15:0]  o_Input_Buffer_Offset_Address,
-  input wire [767:0]  i_Input_Buffer_RDM_Data_ALL,
+  input wire [767:0] i_Input_Buffer_RDM_Data_ALL,
   input wire [31:0]  i_users_qm,
   input wire [3:0]   i_Combine_user_index,  
   input wire         i_Combine_process_request,
   input wire         i_RDM_Data_Request,  
   output reg         o_RDM_Data_Valid,  
-  output wire        o_RDM_Data_Comp,
-  output reg [95:0]  o_RDM_Data_Content,
-  output reg         o_Input_Buffer_RDM_Data_Enable,
-  output wire [11:0] HeadPonitH, //Only for testing
-  output wire [11:0] Tail_PointH //Only for testing
+  output reg         o_RDM_Data_Comp,
+  output reg [95:0]  o_RDM_Data_Content
+
  
 );
 
@@ -40,6 +38,9 @@ reg [15:0]Header_Point,Tail_Point;
 reg [15:0]Pre_Header_Point;
 reg [15:0]Pre_Tail_Point;
 reg [15:0]Point_Ass_Counter;
+reg       o_Input_Buffer_RDM_Data_Enable;
+
+
 
 reg [3:0]current_users_qm;
 always @(*)
@@ -64,7 +65,7 @@ begin
 	users_qm_shift<=4'd0;
   else if(Current_State==IDLE)
     users_qm_shift<=4'd0;
-  else if(o_Input_Buffer_Offset_Address==16'd0)
+  else if(o_Input_Buffer_Offset_Address>=i_Current_Combine_E01_Size[13:4])
     users_qm_shift<=users_qm_shift+4'd1;
 end
 
@@ -490,11 +491,13 @@ begin
 end
 
 
-
+wire [11:0] HeadPonitH; //Only for testing
+wire [11:0] Tail_PointH; //Only for testing
 wire [5:0]i_Input_Buffer_RDM_DataL;//Only for testing
 wire [5:0]i_Input_Buffer_RDM_Data_1DL;//Only for testing
 wire [5:0]i_Input_Buffer_RDM_Data_2DL;//Only for testing
 wire [5:0]i_Input_Buffer_RDM_Data_3DL;//Only for testing
+
 
 assign HeadPonitH=Header_Point[15:4];//Only for testing
 assign Tail_PointH=Tail_Point[15:4];//Only for testing
@@ -502,5 +505,6 @@ assign i_Input_Buffer_RDM_DataL=i_Input_Buffer_RDM_Data[5:0];//Only for testing
 assign i_Input_Buffer_RDM_Data_1DL=i_Input_Buffer_RDM_Data_1D[5:0];//Only for testing
 assign i_Input_Buffer_RDM_Data_2DL=i_Input_Buffer_RDM_Data_2D[5:0];//Only for testing
 assign i_Input_Buffer_RDM_Data_3DL=i_Input_Buffer_RDM_Data_3D[5:0];//Only for testing
+
 
 endmodule
