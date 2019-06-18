@@ -586,8 +586,7 @@ begin
 	endcase
 end
 
-wire [10:0]InputBufferReadAddress_Common;
-wire [767:0]InputBufferReadDataCommon;
+
 
 /* 	input wire [3:0]  i_demux_user_idx,
 	input wire [7:0]  i_layer_indicator,
@@ -712,7 +711,46 @@ begin
 	end
 end
 
+wire [15:0]  io_Input_Buffer_Offset_Address;
+wire [767:0] InputBufferReadDataCommon;
+wire [10:0]  InputBufferReadAddress_Common;
+wire [9:0]   InputBufferReadAddress_CommonInternal;
 
+reg [9:0] io_Input_Buffer_Based_Address;
+reg       PingPong_Indicator_RDM;
+
+always @(*)
+begin
+  case(io_Combine_user_index)
+    4'd0: io_Input_Buffer_Based_Address = i_users_input_buffer_start_user0[13:4];
+    4'd1: io_Input_Buffer_Based_Address = i_users_input_buffer_start_user1[13:4];
+    4'd2: io_Input_Buffer_Based_Address = i_users_input_buffer_start_user2[13:4];
+    4'd3: io_Input_Buffer_Based_Address = i_users_input_buffer_start_user3[13:4];
+    4'd4: io_Input_Buffer_Based_Address = i_users_input_buffer_start_user4[13:4];
+    4'd5: io_Input_Buffer_Based_Address = i_users_input_buffer_start_user5[13:4];
+    4'd6: io_Input_Buffer_Based_Address = i_users_input_buffer_start_user6[13:4];
+    4'd7: io_Input_Buffer_Based_Address = i_users_input_buffer_start_user7[13:4];
+    default: io_Input_Buffer_Based_Address = 10'd0;
+  endcase
+end
+
+always @(*)
+begin
+  case(io_Combine_user_index)
+    4'd0: PingPong_Indicator_RDM = ~PingPong_Indicator_User0;
+    4'd1: PingPong_Indicator_RDM = ~PingPong_Indicator_User1;
+    4'd2: PingPong_Indicator_RDM = ~PingPong_Indicator_User2;
+    4'd3: PingPong_Indicator_RDM = ~PingPong_Indicator_User3;
+    4'd4: PingPong_Indicator_RDM = ~PingPong_Indicator_User4;
+    4'd5: PingPong_Indicator_RDM = ~PingPong_Indicator_User5;
+    4'd6: PingPong_Indicator_RDM = ~PingPong_Indicator_User6;
+    4'd7: PingPong_Indicator_RDM = ~PingPong_Indicator_User7;
+    default: PingPong_Indicator_RDM = 1'b0;
+  endcase
+end
+
+assign InputBufferReadAddress_CommonInternal=io_Input_Buffer_Based_Address+io_Input_Buffer_Offset_Address[9:0];
+assign InputBufferReadAddress_Common=({PingPong_Indicator_RDM,InputBufferReadAddress_CommonInternal});
 
 DeRateMatching_InputBufferWrapper DeRateMatching_InputBufferWrapper_U1
 (
@@ -797,7 +835,7 @@ FSM_RDM FSM_RDM_U1
   .i_core_clk(i_core_clk), 
   .i_Current_Combine_E01_Size(io_Current_Combine_E01_Size),
   .i_Current_Combine_Ncb_Size(io_Current_Combine_Ncb_Size),
-  output reg [15:0]  o_Input_Buffer_Offset_Address,//Flag V1.1
+  .o_Input_Buffer_Offset_Address(io_Input_Buffer_Offset_Address),//Flag V1.1
   .i_Input_Buffer_RDM_Data_ALL(InputBufferReadDataCommon),
   .i_users_qm(i_users_qm),
   .i_Combine_user_index(io_Combine_user_index),  
