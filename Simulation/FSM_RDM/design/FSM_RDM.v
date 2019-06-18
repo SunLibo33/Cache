@@ -163,7 +163,19 @@ begin
 end
 
  
-
+always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
+begin
+  if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
+    o_RDM_Data_Comp<=1'b0;
+  else
+    begin
+      if(Current_State==IDLE)
+        o_RDM_Data_Comp<=1'b0;
+      else if(Current_State==DATACOMP)
+        o_RDM_Data_Comp<=1'b1; 
+    end   
+end
+ 
 always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
 begin
   if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))

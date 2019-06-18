@@ -781,7 +781,7 @@ FSM_TOP FSM_TOP_U1
   .i_core_clk(i_core_clk), 
   .i_rdm_slot_start(i_rdm_slot_start),
   .io_Input_PingPong_Buffer_Write_Indicator(io_Input_PingPong_Buffer_Write_Indicator),
-  .i_current_cb_combine_comp(io_current_cb_combine_comp),
+  .i_current_cb_combine_comp(io_current_cb_combine_comp),//Flag V1.1
   .o_Combine_process_request(io_Combine_process_request),
   .o_Combine_user_index(io_Combine_user_index)
  
@@ -797,11 +797,11 @@ FSM_RDM FSM_RDM_U1
   .i_core_clk(i_core_clk), 
   .i_Current_Combine_E01_Size(io_Current_Combine_E01_Size),
   .i_Current_Combine_Ncb_Size(io_Current_Combine_Ncb_Size),
-  output reg [15:0]  o_Input_Buffer_Offset_Address,
+  output reg [15:0]  o_Input_Buffer_Offset_Address,//Flag V1.1
   .i_Input_Buffer_RDM_Data_ALL(InputBufferReadDataCommon),
   .i_users_qm(i_users_qm),
   .i_Combine_user_index(io_Combine_user_index),  
-  .i_Combine_process_request((io_Combine_process_request),),
+  .i_Combine_process_request(io_Combine_process_request),
   .i_RDM_Data_Request(io_RDM_Data_Request),  
   .o_RDM_Data_Valid(io_RDM_Data_Valid),  
   .o_RDM_Data_Comp(io_RDM_Data_Comp),
@@ -821,7 +821,7 @@ FSM_Combine FSM_Combine_U1
   .i_rx_fsm_rstn(i_rx_fsm_rstn), 			 
   .i_core_clk(i_core_clk), 
   .i_rdm_slot_start(i_rdm_slot_start),
-  .o_current_cb_combine_comp(io_current_cb_combine_comp),
+  .o_current_cb_combine_comp(io_current_cb_combine_comp),//Flag V1.1
   .i_Combine_process_request(io_Combine_process_request),
   .i_Combine_user_index(io_Combine_user_index),
   .o_RDM_Data_Request(io_RDM_Data_Request),
@@ -833,10 +833,7 @@ FSM_Combine FSM_Combine_U1
   
 );
 
- 
+   
 	
-    
-    
-	
-endmodule
+endmodule //Update 20190618 1644
 

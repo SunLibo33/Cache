@@ -9,10 +9,10 @@ module FSM_Combine
   input wire        i_rx_fsm_rstn, 			 
   input wire        i_core_clk, 
   input wire        i_rdm_slot_start,//not use
-  output wire       o_current_cb_combine_comp,
+  output reg       o_current_cb_combine_comp,
   input wire        i_Combine_process_request,
   input wire [3:0]  i_Combine_user_index,
-  output reg       o_RDM_Data_Request,
+  output reg        o_RDM_Data_Request,
   input wire        i_RDM_Data_Valid,  
   input wire [95:0] i_RDM_Data_Content,
   input wire        i_RDM_Data_Comp, 
@@ -125,6 +125,18 @@ begin
     end
 end
 
+always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
+begin
+  if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
+    o_RDM_Data_Request<=1'b0;
+  else
+    begin
+      if(Current_State==IDLE)
+        o_RDM_Data_Request<=1'b0;
+      else if((Current_State==FILL)||(Current_State==COMBINE))
+        o_RDM_Data_Request<=1'b1; 
+    end   
+end
 
 always @(*)
 begin
