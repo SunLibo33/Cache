@@ -866,6 +866,9 @@ wire [15:0] io_SENDHARQ_Data_Pong_Add_Amount;
 wire [159:0] DualPort_SRAM_COMB_Ping_Buffer_Read_Data;
 wire [159:0] DualPort_SRAM_COMB_Pong_Buffer_Read_Data;
 
+wire [3:0]io_SENDHARQ_Data_Ping_User_Index;
+wire [3:0]io_SENDHARQ_Data_Pong_User_Index;
+
 FSM_Combine FSM_Combine_U1
 (
   .i_rx_rstn(i_rx_rstn), 
@@ -891,6 +894,8 @@ FSM_Combine FSM_Combine_U1
   .i_SENDHARQ_Data_Address(io_SENDHARQ_Data_Address),
   .o_SENDHARQ_Data_Ping_Add_Amount(io_SENDHARQ_Data_Ping_Add_Amount),
   .o_SENDHARQ_Data_Pong_Add_Amount(io_SENDHARQ_Data_Pong_Add_Amount),
+  .o_SENDHARQ_Data_Ping_User_Index(io_SENDHARQ_Data_Ping_User_Index),
+  .o_SENDHARQ_Data_Pong_User_Index(io_SENDHARQ_Data_Pong_User_Index),
   .DualPort_SRAM_COMB_Ping_Buffer_Read_Data(DualPort_SRAM_COMB_Ping_Buffer_Read_Data),
   .DualPort_SRAM_COMB_Pong_Buffer_Read_Data(DualPort_SRAM_COMB_Pong_Buffer_Read_Data)
   
@@ -913,6 +918,8 @@ FSM_SENDHARQ FSM_SENDHARQ_U1
   .o_SENDHARQ_Data_Address(io_SENDHARQ_Data_Address),
   .i_SENDHARQ_Data_Ping_Add_Amount(io_SENDHARQ_Data_Ping_Add_Amount),
   .i_SENDHARQ_Data_Pong_Add_Amount(io_SENDHARQ_Data_Pong_Add_Amount),
+  .i_SENDHARQ_Data_Ping_User_Index(io_SENDHARQ_Data_Ping_User_Index),
+  .i_SENDHARQ_Data_Pong_User_Index(io_SENDHARQ_Data_Pong_User_Index),
   .DualPort_SRAM_COMB_Ping_Buffer_Read_Data(DualPort_SRAM_COMB_Ping_Buffer_Read_Data),
   .DualPort_SRAM_COMB_Pong_Buffer_Read_Data(DualPort_SRAM_COMB_Pong_Buffer_Read_Data)
   

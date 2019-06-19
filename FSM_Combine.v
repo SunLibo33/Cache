@@ -35,6 +35,9 @@ module FSM_Combine
   output reg  [15:0] o_SENDHARQ_Data_Ping_Add_Amount,
   output reg  [15:0] o_SENDHARQ_Data_Pong_Add_Amount,
   
+  output reg  [3:0]  o_SENDHARQ_Data_Ping_User_Index,
+  output reg  [3:0]  o_SENDHARQ_Data_Pong_User_Index,
+  
   output reg [159:0]DualPort_SRAM_COMB_Ping_Buffer_Read_Data,
   output reg [159:0]DualPort_SRAM_COMB_Pong_Buffer_Read_Data 
     
@@ -286,8 +289,36 @@ begin
     end
 end
 
- 
+always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
+begin
+  if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
+    begin
+	  o_SENDHARQ_Data_Ping_User_Index<=4'd0;
+	end
+  else
+    begin
+      if((Current_State==COMPLETE)&&(Data_Combine_PingPong_Indicator==1'b0))
+        begin
+          o_SENDHARQ_Data_Ping_User_Index<=i_Combine_user_index;
+        end
+    end
+end
 
+ 
+always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
+begin
+  if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
+    begin
+	  o_SENDHARQ_Data_Pong_User_Index<=4'd0;
+	end
+  else
+    begin
+      if((Current_State==COMPLETE)&&(Data_Combine_PingPong_Indicator==1'b1))
+        begin
+          o_SENDHARQ_Data_Pong_User_Index<=i_Combine_user_index;
+        end
+    end
+end
 
 always @(*)
 begin 
