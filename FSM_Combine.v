@@ -34,7 +34,6 @@ module FSM_Combine
   
   output reg  [15:0] o_SENDHARQ_Data_Ping_Add_Amount,
   output reg  [15:0] o_SENDHARQ_Data_Pong_Add_Amount,
-  
   output reg  [3:0]  o_SENDHARQ_Data_Ping_User_Index,
   output reg  [3:0]  o_SENDHARQ_Data_Pong_User_Index,
   
