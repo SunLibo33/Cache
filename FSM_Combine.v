@@ -38,8 +38,8 @@ module FSM_Combine
   output reg  [3:0]  o_SENDHARQ_Data_Ping_User_Index,
   output reg  [3:0]  o_SENDHARQ_Data_Pong_User_Index,
   
-  output reg [159:0]DualPort_SRAM_COMB_Ping_Buffer_Read_Data,
-  output reg [159:0]DualPort_SRAM_COMB_Pong_Buffer_Read_Data 
+  output wire [159:0]DualPort_SRAM_COMB_Ping_Buffer_Read_Data,
+  output wire [159:0]DualPort_SRAM_COMB_Pong_Buffer_Read_Data 
     
   
 );
