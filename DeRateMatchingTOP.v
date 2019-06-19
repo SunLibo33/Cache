@@ -866,12 +866,33 @@ FSM_Combine FSM_Combine_U1
   .i_RDM_Data_Valid(io_RDM_Data_Valid),  
   .i_RDM_Data_Content(io_RDM_Data_Content),
   .i_RDM_Data_Comp(io_RDM_Data_Comp), 
-  .i_users_ncb(i_users_ncb)
-
+  .i_Current_Combine_E01_Size(io_Current_Combine_E01_Size),
+  .i_Current_Combine_Ncb_Size(io_Current_Combine_Ncb_Size),
   
 );
 
-   
+
+
+  
+  output reg         o_SENDHARQ_Data_Ping_request,
+  output reg         o_SENDHARQ_Data_Pong_request,
+
+  input wire         i_SENDHARQ_Data_Ping_Comp,
+  input wire         i_SENDHARQ_Data_Pong_Comp,
+  
+  input wire         i_SENDHARQ_Data_Ping_Busy,
+  input wire         i_SENDHARQ_Data_Pong_Busy,
+  input wire  [10:0] i_SENDHARQ_Data_Address,
+
+  
+  output reg  [15:0] o_SENDHARQ_Data_Ping_Add_Amount,
+  output reg  [15:0] o_SENDHARQ_Data_Pong_Add_Amount,
+  
+  output reg [159:0]DualPort_SRAM_COMB_Ping_Buffer_Read_Data,
+  output reg [159:0]DualPort_SRAM_COMB_Pong_Buffer_Read_Data 
+    
+
+  
 	
 endmodule //Update 20190618 1644
 

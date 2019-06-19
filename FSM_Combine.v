@@ -16,17 +16,27 @@ module FSM_Combine
   input wire        i_RDM_Data_Valid,  
   input wire [95:0] i_RDM_Data_Content,
   input wire        i_RDM_Data_Comp, 
-  input wire [127:0]i_users_ncb, 
   
-  output wire        o_SENDHARQ_Data_request,
-  output wire        o_SENDHARQ_Data_PingPong_Indicator,
-  output wire [15:0] o_SENDHARQ_Data_ncb,
+  input wire [13:0] i_Current_Combine_E01_Size,
+  input wire [15:0] i_Current_Combine_Ncb_Size,
+
   
-  input wire         i_SENDHARQ_Data_Comp,
+  output reg         o_SENDHARQ_Data_Ping_request,
+  output reg         o_SENDHARQ_Data_Pong_request,
+
+  input wire         i_SENDHARQ_Data_Ping_Comp,
+  input wire         i_SENDHARQ_Data_Pong_Comp,
+  
+  input wire         i_SENDHARQ_Data_Ping_Busy,
+  input wire         i_SENDHARQ_Data_Pong_Busy,
   input wire  [10:0] i_SENDHARQ_Data_Address,
 
-  output wire [159:0]DualPort_SRAM_COMB_Ping_Buffer_Read_Data,
-  output wire [159:0]DualPort_SRAM_COMB_Pong_Buffer_Read_Data 
+  
+  output reg  [15:0] o_SENDHARQ_Data_Ping_Add_Amount,
+  output reg  [15:0] o_SENDHARQ_Data_Pong_Add_Amount,
+  
+  output reg [159:0]DualPort_SRAM_COMB_Ping_Buffer_Read_Data,
+  output reg [159:0]DualPort_SRAM_COMB_Pong_Buffer_Read_Data 
     
   
 );
@@ -43,7 +53,7 @@ parameter COMPLETE    = 8'b0001_0000;
 
 reg [7:0]Current_State = IDLE;
 reg [7:0]Next_State    = IDLE;
-reg [15:0]users_ncb_size_use;
+
 reg  [10:0]OutputBufferWriteAddressPre;
 reg  [10:0]OutputBufferWriteAddress;
 wire [10:0]OutputBufferReadAddress;
@@ -78,22 +88,15 @@ begin
 	    IDLE:
 		  begin
 		    if(i_Combine_process_request==1'b1)
-			  Next_State=WAIT;
-			else
-			  Next_State=IDLE;
-		  end
-	    WAIT:
-		  begin
-		    if(i_SENDHARQ_Data_Comp==1'b1)//Flag 1.1
 			  Next_State=FILL;
 			else
-			  Next_State=WAIT;
+			  Next_State=IDLE;
 		  end
 	    FILL:
 		  begin
 		    if(i_RDM_Data_Comp==1'b1)
-			  Next_State=COMPLETE;
-		    else if(OutputBufferWriteAddress>=users_ncb_size_use[15:4])//Flag Confirmation
+			  Next_State=WAIT;
+		    else if(OutputBufferWriteAddress>=i_Current_Combine_Ncb_Size[15:4])//Flag Confirmation
 			  Next_State=COMBINE;
 			else
 			  Next_State=FILL;
@@ -101,9 +104,16 @@ begin
 	    COMBINE:
 		  begin
 		    if(i_RDM_Data_Comp==1'b1)
-			  Next_State=COMPLETE;
+			  Next_State=WAIT;
 			else
 			  Next_State=COMBINE;
+		  end
+	    WAIT:
+		  begin
+		    if(((i_SENDHARQ_Data_Ping_Busy==1'b1)&&(Data_Combine_PingPong_Indicator==1'b1))||((i_SENDHARQ_Data_Pong_Busy==1'b1)&&(Data_Combine_PingPong_Indicator==1'b0)))
+			  Next_State=WAIT;
+			else
+			  Next_State=COMPLETE;
 		  end
 	    COMPLETE: Next_State=IDLE;   
         default: Next_State=IDLE;
@@ -150,20 +160,6 @@ begin
     end   
 end
 
-always @(*)
-begin
-  case(i_Combine_user_index)
-    4'd0:users_ncb_size_use=i_users_ncb[15:0];
-    4'd1:users_ncb_size_use=i_users_ncb[31:16];
-    4'd2:users_ncb_size_use=i_users_ncb[47:32];
-    4'd3:users_ncb_size_use=i_users_ncb[63:48];
-    4'd4:users_ncb_size_use=i_users_ncb[79:64];
-    4'd5:users_ncb_size_use=i_users_ncb[95:80];
-    4'd6:users_ncb_size_use=i_users_ncb[111:96];
-    4'd7:users_ncb_size_use=i_users_ncb[127:112];
-	default:users_ncb_size_use=16'd0;
-	endcase
-end
 
 assign OutputBufferReadAddress=OutputBufferWriteAddressPre;
 
@@ -214,7 +210,7 @@ begin
 		    begin
 			  OutputBufferWriteAddress<=OutputBufferWriteAddressPre;
 			  i_RDM_Data_Content_1D <= i_RDM_Data_Content;
-		      if(OutputBufferWriteAddressPre<users_ncb_size_use[15:4])
+		      if(OutputBufferWriteAddressPre<i_Current_Combine_Ncb_Size[15:4])
 	            OutputBufferWriteAddressPre<=OutputBufferWriteAddressPre+1'd1;
 			  else
 			    OutputBufferWriteAddressPre<=11'd0;
@@ -222,6 +218,75 @@ begin
 		end
 	end
 end
+
+
+always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
+begin
+  if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
+    begin
+	  o_SENDHARQ_Data_Ping_request<=1'b0;
+	end
+  else
+    begin
+      if((Current_State==COMPLETE)&&(Data_Combine_PingPong_Indicator==1'b0))
+        o_SENDHARQ_Data_Ping_request<=1'b1;
+      else if(i_SENDHARQ_Data_Ping_Comp==1'b1)
+        o_SENDHARQ_Data_Ping_request<=1'b0;
+    end
+end
+
+always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
+begin
+  if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
+    begin
+	  o_SENDHARQ_Data_Pong_request<=1'b0;
+	end
+  else
+    begin
+      if((Current_State==COMPLETE)&&(Data_Combine_PingPong_Indicator==1'b1))
+        o_SENDHARQ_Data_Pong_request<=1'b1;
+      else if(i_SENDHARQ_Data_Pong_Comp==1'b1)
+        o_SENDHARQ_Data_Pong_request<=1'b0;
+    end
+end
+
+always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
+begin
+  if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
+    begin
+	  o_SENDHARQ_Data_Ping_Add_Amount<=16'd0;
+	end
+  else
+    begin
+      if((Current_State==COMPLETE)&&(Data_Combine_PingPong_Indicator==1'b0))
+        begin
+          if(i_Current_Combine_E01_Size[13:0]<=i_Current_Combine_Ncb_Size[13:0])
+            o_SENDHARQ_Data_Ping_Add_Amount<=i_Current_Combine_E01_Size;
+          else
+            o_SENDHARQ_Data_Ping_Add_Amount<=i_Current_Combine_Ncb_Size; 
+        end
+    end
+end
+
+always @(posedge i_core_clk or negedge i_rx_rstn or negedge i_rx_fsm_rstn)
+begin
+  if((i_rx_rstn==1'b0)||(i_rx_fsm_rstn==1'b0))
+    begin
+	  o_SENDHARQ_Data_Pong_Add_Amount<=16'd0;
+	end
+  else
+    begin
+      if((Current_State==COMPLETE)&&(Data_Combine_PingPong_Indicator==1'b1))
+        begin
+          if(i_Current_Combine_E01_Size[13:0]<=i_Current_Combine_Ncb_Size[13:0])
+            o_SENDHARQ_Data_Pong_Add_Amount<=i_Current_Combine_E01_Size;
+          else
+            o_SENDHARQ_Data_Pong_Add_Amount<=i_Current_Combine_Ncb_Size; 
+        end
+    end
+end
+
+ 
 
 
 always @(*)
