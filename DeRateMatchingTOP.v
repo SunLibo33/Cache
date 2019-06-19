@@ -38,7 +38,13 @@ module DeRateMatchingTOP
 	input wire [7:0]  i_layer_indicator,// For each user , bit'0' represent 1 layer mapping on , bit'1' represent 2 layers mapping on
 	input wire        i_demux_strb,
 	input wire [95:0] i_demux_rx,	
-	input wire [31:0] i_users_qm
+	input wire [31:0] i_users_qm,
+    
+    
+    output wire  [95:0] o_Data_SEND_TO_HARQ,
+    output wire         o_Data_SEND_TO_HARQ_VALID,
+    output wire  [3:0]  o_Data_SEND_TO_HARQ_AMOUNT,
+    output wire  [3:0]  o_Data_SEND_TO_HARQ_USER_INDEX
 	
 	//input/output/inout | reg/wire | signed/na | [7:0] | name,               
  
@@ -921,17 +927,19 @@ FSM_SENDHARQ FSM_SENDHARQ_U1
   .i_SENDHARQ_Data_Ping_User_Index(io_SENDHARQ_Data_Ping_User_Index),
   .i_SENDHARQ_Data_Pong_User_Index(io_SENDHARQ_Data_Pong_User_Index),
   .DualPort_SRAM_COMB_Ping_Buffer_Read_Data(DualPort_SRAM_COMB_Ping_Buffer_Read_Data),
-  .DualPort_SRAM_COMB_Pong_Buffer_Read_Data(DualPort_SRAM_COMB_Pong_Buffer_Read_Data)
+  .DualPort_SRAM_COMB_Pong_Buffer_Read_Data(DualPort_SRAM_COMB_Pong_Buffer_Read_Data),
+  
+  .Data_SEND_TO_HARQ(o_Data_SEND_TO_HARQ),
+  .Data_SEND_TO_HARQ_VALID(o_Data_SEND_TO_HARQ_VALID),
+  .Data_SEND_TO_HARQ_AMOUNT(o_Data_SEND_TO_HARQ_AMOUNT),
+  .Data_SEND_TO_HARQ_USER_INDEX(o_Data_SEND_TO_HARQ_USER_INDEX)
+  
   
 );
  
 
- 
-  
- 
-    
 
-  
+ 
 	
-endmodule //Update 20190618 1644
+endmodule //Update 20190619 1629
 

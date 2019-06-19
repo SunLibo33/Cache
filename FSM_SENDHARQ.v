@@ -42,6 +42,7 @@ parameter SENDPING     = 8'b0000_0010;
 parameter SENDPONG     = 8'b0000_0100;
 parameter SENDPINGCOMP = 8'b0000_1000;
 parameter SENDPONGCOMP = 8'b0001_0000;
+parameter ADJ          = 8'b0010_0000;
 
 
 reg [7:0]Current_State = IDLE;
@@ -91,8 +92,9 @@ begin
             else
               Next_State=SENDPONG;
           end
-        SENDPINGCOMP: Next_State=IDLE;
-        SENDPONGCOMP: Next_State=IDLE;
+        SENDPINGCOMP: Next_State=ADJ;
+        SENDPONGCOMP: Next_State=ADJ;
+        ADJ:          Next_State=IDLE; 
 
         default: Next_State=IDLE;
       endcase
