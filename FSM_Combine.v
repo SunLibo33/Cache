@@ -8,7 +8,7 @@ module FSM_Combine
   input wire        i_rx_rstn, 
   input wire        i_rx_fsm_rstn, 			 
   input wire        i_core_clk, 
-  input wire        i_rdm_slot_start,//not use
+  input wire        i_rdm_slot_start,
   output reg        o_current_cb_combine_comp,
   input wire        i_Combine_process_request,
   input wire [3:0]  i_Combine_user_index,

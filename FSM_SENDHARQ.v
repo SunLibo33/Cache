@@ -7,7 +7,7 @@ module FSM_SENDHARQ
   input wire        i_rx_rstn, 
   input wire        i_rx_fsm_rstn, 			 
   input wire        i_core_clk, 
-  input wire        i_rdm_slot_start,//not use
+  input wire        i_rdm_slot_start,
  
   
   input wire        i_SENDHARQ_Data_Ping_request,
