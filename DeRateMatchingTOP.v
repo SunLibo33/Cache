@@ -853,6 +853,19 @@ wire io_RDM_Data_Valid;
 wire [95:0] io_RDM_Data_Content;
 wire io_RDM_Data_Comp;
 
+wire io_SENDHARQ_Data_Ping_request;
+wire io_SENDHARQ_Data_Pong_request;
+wire io_SENDHARQ_Data_Ping_Comp;
+wire io_SENDHARQ_Data_Pong_Comp;
+wire io_SENDHARQ_Data_Ping_Busy;
+wire io_SENDHARQ_Data_Pong_Busy;
+
+wire [10:0] io_SENDHARQ_Data_Address;
+wire [15:0] io_SENDHARQ_Data_Ping_Add_Amount;
+wire [15:0] io_SENDHARQ_Data_Pong_Add_Amount;
+wire [159:0] DualPort_SRAM_COMB_Ping_Buffer_Read_Data;
+wire [159:0] DualPort_SRAM_COMB_Pong_Buffer_Read_Data;
+
 FSM_Combine FSM_Combine_U1
 (
   .i_rx_rstn(i_rx_rstn), 
@@ -869,27 +882,46 @@ FSM_Combine FSM_Combine_U1
   .i_Current_Combine_E01_Size(io_Current_Combine_E01_Size),
   .i_Current_Combine_Ncb_Size(io_Current_Combine_Ncb_Size),
   
+  .o_SENDHARQ_Data_Ping_request(io_SENDHARQ_Data_Ping_request),
+  .o_SENDHARQ_Data_Pong_request(io_SENDHARQ_Data_Pong_request),
+  .i_SENDHARQ_Data_Ping_Comp(io_SENDHARQ_Data_Ping_Comp),
+  .i_SENDHARQ_Data_Pong_Comp(io_SENDHARQ_Data_Pong_Comp),
+  .i_SENDHARQ_Data_Ping_Busy(io_SENDHARQ_Data_Ping_Busy),
+  .i_SENDHARQ_Data_Pong_Busy(io_SENDHARQ_Data_Pong_Busy),
+  .i_SENDHARQ_Data_Address(io_SENDHARQ_Data_Address),
+  .o_SENDHARQ_Data_Ping_Add_Amount(io_SENDHARQ_Data_Ping_Add_Amount),
+  .o_SENDHARQ_Data_Pong_Add_Amount(io_SENDHARQ_Data_Pong_Add_Amount),
+  .DualPort_SRAM_COMB_Ping_Buffer_Read_Data(DualPort_SRAM_COMB_Ping_Buffer_Read_Data),
+  .DualPort_SRAM_COMB_Pong_Buffer_Read_Data(DualPort_SRAM_COMB_Pong_Buffer_Read_Data)
+  
 );
 
 
+FSM_SENDHARQ FSM_SENDHARQ_U1
+(
+  .i_rx_rstn(i_rx_rstn), 
+  .i_rx_fsm_rstn(i_rx_fsm_rstn), 			 
+  .i_core_clk(i_core_clk), 
+  .i_rdm_slot_start(i_rdm_slot_start),
+  
+  .i_SENDHARQ_Data_Ping_request(io_SENDHARQ_Data_Ping_request),
+  .i_SENDHARQ_Data_Pong_request(io_SENDHARQ_Data_Pong_request),
+  .o_SENDHARQ_Data_Ping_Comp(io_SENDHARQ_Data_Ping_Comp),
+  .o_SENDHARQ_Data_Pong_Comp(io_SENDHARQ_Data_Pong_Comp),
+  .o_SENDHARQ_Data_Ping_Busy(io_SENDHARQ_Data_Ping_Busy),
+  .o_SENDHARQ_Data_Pong_Busy(io_SENDHARQ_Data_Pong_Busy),
+  .o_SENDHARQ_Data_Address(io_SENDHARQ_Data_Address),
+  .i_SENDHARQ_Data_Ping_Add_Amount(io_SENDHARQ_Data_Ping_Add_Amount),
+  .i_SENDHARQ_Data_Pong_Add_Amount(io_SENDHARQ_Data_Pong_Add_Amount),
+  .DualPort_SRAM_COMB_Ping_Buffer_Read_Data(DualPort_SRAM_COMB_Ping_Buffer_Read_Data),
+  .DualPort_SRAM_COMB_Pong_Buffer_Read_Data(DualPort_SRAM_COMB_Pong_Buffer_Read_Data)
+  
+);
+ 
 
+ 
   
-  output reg         o_SENDHARQ_Data_Ping_request,
-  output reg         o_SENDHARQ_Data_Pong_request,
-
-  input wire         i_SENDHARQ_Data_Ping_Comp,
-  input wire         i_SENDHARQ_Data_Pong_Comp,
-  
-  input wire         i_SENDHARQ_Data_Ping_Busy,
-  input wire         i_SENDHARQ_Data_Pong_Busy,
-  input wire  [10:0] i_SENDHARQ_Data_Address,
-
-  
-  output reg  [15:0] o_SENDHARQ_Data_Ping_Add_Amount,
-  output reg  [15:0] o_SENDHARQ_Data_Pong_Add_Amount,
-  
-  output reg [159:0]DualPort_SRAM_COMB_Ping_Buffer_Read_Data,
-  output reg [159:0]DualPort_SRAM_COMB_Pong_Buffer_Read_Data 
+ 
     
 
   
